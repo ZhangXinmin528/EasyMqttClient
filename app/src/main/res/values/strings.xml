@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">EasyMqttClient</string>
+    <string name="all_add_client">添加</string>
+    <string name="all_log_print">打印日志</string>
+    <string name="all_input_client_id">Client Id</string>
+    <string name="all_input_server">Server</string>
+    <string name="all_input_port">Port</string>
+    <string name="all_clear_session">Clear Session</string>
+    <string name="all_build_connection">建立连接</string>
+</resources>
