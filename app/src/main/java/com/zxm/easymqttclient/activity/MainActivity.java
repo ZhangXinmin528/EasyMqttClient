@@ -1,9 +1,10 @@
-package com.zxm.easymqttclient;
+package com.zxm.easymqttclient.activity;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 
+import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {

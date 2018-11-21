@@ -1,13 +1,16 @@
-package com.zxm.easymqttclient.base;
+package com.zxm.easymqttclient.activity;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.zxm.easymqtt.client.MqttClientManager;
 import com.zxm.easymqtt.listener.MqttActionListener;
 import com.zxm.easymqtt.util.Debugger;
 import com.zxm.easymqttclient.R;
+import com.zxm.easymqttclient.base.BaseActivity;
 
 /**
  * Created by ZhangXinmin on 2018/11/19.
@@ -66,6 +69,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                         .setPort(port)
                         .setClientId(clientId)
                         .setCleanSession(clearSession)
+                        .setAutomaticReconnect(true)
                         .buildClient();
 
         MqttClientManager.getInstance()
@@ -73,17 +77,20 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
 
         MqttClientManager
                 .getInstance()
-                .buildConnection(new MqttActionListener() {
+                .connect(new MqttActionListener() {
                     @Override
                     public void onSuccess() {
-
+                        Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
+                        Intent detial = new Intent(mContext, ConnectionDetialActivity.class);
+                        startActivity(detial);
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
-
+                        Toast.makeText(mContext, "Mqtt建立连接失败！", Toast.LENGTH_SHORT).show();
                     }
                 });
+
 
     }
 }

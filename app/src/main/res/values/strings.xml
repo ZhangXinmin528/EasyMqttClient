@@ -7,4 +7,12 @@
     <string name="all_input_port">Port</string>
     <string name="all_clear_session">Clear Session</string>
     <string name="all_build_connection">建立连接</string>
+    <string name="all_subscibe_publish">发布订阅</string>
+    <string name="all_topic">Topic</string>
+    <string name="all_message">Message</string>
+    <string name="all_qos">QOS</string>
+    <string name="all_subscribe">Subscribe</string>
+    <string name="all_publish">Publish</string>
+    <string name="all_disconnect">Disconnect</string>
+    <string name="all_retained">Retained</string>
 </resources>
