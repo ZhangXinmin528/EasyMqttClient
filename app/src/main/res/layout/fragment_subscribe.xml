@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:hint="@string/all_topic"
             android:inputType="text"
+            android:text="infrared/783379725"
             android:paddingStart="12dp"
             tools:ignore="RtlSymmetry" />
     </android.support.design.widget.TextInputLayout>
@@ -43,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:checked="true"
+            android:checked="false"
             android:text="0"
             tools:ignore="HardcodedText" />
 
@@ -51,8 +52,9 @@
             android:id="@+id/rb_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"
+
             android:text="1"
+            android:checked="true"
             tools:ignore="HardcodedText" />
 
         <RadioButton

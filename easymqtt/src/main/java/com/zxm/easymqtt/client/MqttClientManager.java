@@ -1,13 +1,19 @@
 package com.zxm.easymqtt.client;
 
+import android.Manifest;
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.DiskLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
+import com.orhanobut.logger.Logger;
 import com.zxm.easymqtt.handler.SimpleMqttTraceHandler;
 import com.zxm.easymqtt.listener.MqttActionListener;
-import com.zxm.easymqtt.util.Debugger;
+import com.zxm.easymqtt.listener.MqttConnectionCallback;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -63,30 +69,40 @@ public final class MqttClientManager {
      *
      * @param listener {@link MqttActionListener}
      */
-    public void connect(@NonNull MqttActionListener listener) {
+    @RequiresPermission(Manifest.permission.INTERNET)
+    public void connect(@NonNull MqttActionListener listener, MqttConnectionCallback callback) {
         if (mMqttClient == null) {
             mMqttClient = mBuilder.mMqttAndroidClient;
         }
 
         if (mMqttClient != null && !mMqttClient.isConnected()) {
             try {
-                Debugger.i("[connect()]-->Mqtt client is connecting!" + mMqttClient.hashCode());
+                Logger.i("[connect()]-->Mqtt client is connecting!" + mMqttClient.hashCode());
                 mMqttClient.setCallback(new MqttCallback() {
                     @Override
                     public void connectionLost(Throwable cause) {
-                        Debugger.e("Mqtt client build connection to the server is lost!");
+                        if (callback != null) {
+                            callback.connectionLost(cause);
+                        }
+                        Logger.e("Mqtt client build connection to the server is lost!");
                     }
 
                     @Override
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
                         final String msg = new String(message.getPayload());
                         final int qos = message.getQos();
-                        Debugger.i("Mqtt client get message from server{'message' : " + msg + ";'qos' : " + qos + "}");
+                        if (callback != null) {
+                            callback.messageArrived(topic, msg, qos);
+                        }
+                        Logger.i("Mqtt client get message from server[message : " + msg + ";'qos' : " + qos + "]");
                     }
 
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
-                        Debugger.i("Mqtt client delivery message complete!");
+                        if (callback != null) {
+                            callback.deliveryComplete();
+                        }
+                        Logger.i("Mqtt client delivery message complete!");
                     }
                 });
                 mMqttClient.connect(mBuilder.mConnectOptions, null, new IMqttActionListener() {
@@ -95,7 +111,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Debugger.i("[connect()]-->Mqtt client build connection success!");
+                        Logger.i("[connect()]-->Mqtt client build connection success!");
                     }
 
                     @Override
@@ -103,11 +119,11 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Debugger.e("[connect()]-->Mqtt client build connection failed!");
+                        Logger.e("[connect()]-->Mqtt client build connection failed!");
                     }
                 });
             } catch (MqttException e) {
-                Debugger.e("[connect()]-->Mqtt client build connection got exception : " + e.toString());
+                Logger.e("[connect()]-->Mqtt client build connection got exception : " + e.toString());
             }
         }
     }
@@ -125,9 +141,9 @@ public final class MqttClientManager {
     public void subscribe(@NonNull String topic, @IntRange(from = 0, to = 2) int qos,
                           @NonNull MqttActionListener listener) {
 
-        Debugger.i("[subscribe()]-->Mqtt client is going to subscribe the topic : [" + topic + "]" + mMqttClient.hashCode());
+        Logger.i("[subscribe()]-->Mqtt client is going to subscribe the topic : [" + topic + "]" + mMqttClient.hashCode());
         if (TextUtils.isEmpty(topic) || listener == null) {
-            Debugger.e("[subscribe()]-->Mqtt client subscribe params is illegal!");
+            Logger.e("[subscribe()]-->Mqtt client subscribe params is illegal!");
             return;
         }
         if (mMqttClient != null && mMqttClient.isConnected()) {
@@ -138,7 +154,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Debugger.i("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
+                        Logger.i("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
                     }
 
                     @Override
@@ -146,12 +162,12 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Debugger.e("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
+                        Logger.e("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
                     }
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-                Debugger.e("[subscribe()]-->Mqtt client subscribe got exception : " + e.toString());
+                Logger.e("[subscribe()]-->Mqtt client subscribe got exception : " + e.toString());
             }
 
         }
@@ -171,11 +187,11 @@ public final class MqttClientManager {
     public void publish(@NonNull String topic, @NonNull String message, @IntRange(from = 0, to = 2) int qos,
                         boolean retained, @NonNull MqttActionListener listener) {
 
-        Debugger.i("[publish()]-->Mqtt client is going to publish the topic : [" + topic + "]-->message : ["
+        Logger.i("[publish()]-->Mqtt client is going to publish the topic : [" + topic + "]-->message : ["
                 + message + "]-->qos : [" + qos + "]-->retained : [" + retained + "]" + mMqttClient.hashCode());
 
         if (TextUtils.isEmpty(topic) || TextUtils.isEmpty(message) || listener == null) {
-            Debugger.e("[publish()]-->Mqtt client publish params is illegal!");
+            Logger.e("[publish()]-->Mqtt client publish params is illegal!");
             return;
         }
         if (mMqttClient != null && mMqttClient.isConnected()) {
@@ -186,7 +202,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Debugger.i("[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
+                        Logger.i("[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
                     }
 
                     @Override
@@ -194,12 +210,12 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Debugger.e("[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
+                        Logger.e("[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
                     }
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-                Debugger.e("[publish()]-->Mqtt client publish got exception : " + e.toString());
+                Logger.e("[publish()]-->Mqtt client publish got exception : " + e.toString());
             }
         }
     }
@@ -211,11 +227,11 @@ public final class MqttClientManager {
      *                 completes. Use null if not required.
      */
     public void disconnect(@NonNull MqttActionListener listener) {
-        Debugger.i("[disconnect()]-->Mqtt client is going to disconnect!" + mMqttClient.hashCode());
+        Logger.i("[disconnect()]-->Mqtt client is going to disconnect!" + mMqttClient.hashCode());
 
         if (mMqttClient != null) {
             if (!mMqttClient.isConnected()) {
-                Debugger.i("[disconnect()]-->Mqtt client has not build the connection!");
+                Logger.i("[disconnect()]-->Mqtt client has not build the connection!");
                 return;
             }
 
@@ -226,7 +242,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Debugger.i("[disconnect()]-->Mqtt client disconnect success!");
+                        Logger.i("[disconnect()]-->Mqtt client disconnect success!");
                     }
 
                     @Override
@@ -234,13 +250,42 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Debugger.e("[disconnect()]-->Mqtt client disconnect falied!");
+                        Logger.e("[disconnect()]-->Mqtt client disconnect falied!");
                     }
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-                Debugger.e("[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
+                Logger.e("[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
             }
+        }
+    }
+
+    /**
+     * Set wheather is enable to print log information and the {@link FormatStrategy}
+     * for {@link AndroidLogAdapter}.
+     *
+     * @param logEnable wheather is enable to print log information
+     * @param strategy  {@link FormatStrategy}
+     * @return
+     */
+    public static void setLogEnable(@NonNull boolean logEnable, @NonNull FormatStrategy strategy) {
+        if (logEnable&& strategy!=null){
+            Logger.addLogAdapter(new AndroidLogAdapter(strategy));
+        }
+    }
+
+
+    /**
+     * Set wheather is enable to save log information and the {@link FormatStrategy}
+     * for {@link com.orhanobut.logger.DiskLogAdapter}
+     *
+     * @param saveEnable wheather is enable to save log information
+     * @param strategy
+     * @return
+     */
+    public static void setSaveLogEnable(@NonNull boolean saveEnable, @NonNull FormatStrategy strategy) {
+        if (saveEnable && strategy != null) {
+            Logger.addLogAdapter(new DiskLogAdapter(strategy));
         }
     }
 
@@ -344,6 +389,7 @@ public final class MqttClientManager {
             return this;
         }
 
+
         /**
          * init MqttConnectOptions
          */
@@ -376,9 +422,9 @@ public final class MqttClientManager {
             setUpOptions();
             if (mMqttAndroidClient == null && !TextUtils.isEmpty(P.mUri) &&
                     !TextUtils.isEmpty(P.mClientId)) {
-//                mMqttAndroidClient = new MqttAndroidClient(P.mContext, "tcp://broker.hivemq.com:1883", P.mClientId);
                 mMqttAndroidClient = new MqttAndroidClient(P.mContext, P.mUri, P.mClientId);
-                Debugger.i("url:" + P.mUri);
+                Logger.i("mqtt client id : " + P.mClientId);
+                Logger.i("mqtt url : " + P.mUri);
             }
 
             return this;
