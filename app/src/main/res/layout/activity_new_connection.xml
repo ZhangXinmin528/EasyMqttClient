@@ -40,7 +40,7 @@
                 android:layout_height="match_parent"
                 android:hint="@string/all_input_server"
                 android:inputType="text"
-                android:text="111.231.71.179"
+                android:text="119.254.229.167"
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
         </android.support.design.widget.TextInputLayout>
@@ -56,7 +56,7 @@
                 android:layout_height="match_parent"
                 android:hint="@string/all_input_port"
                 android:inputType="number"
-                android:text="1883"
+                android:text="3080"
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
         </android.support.design.widget.TextInputLayout>

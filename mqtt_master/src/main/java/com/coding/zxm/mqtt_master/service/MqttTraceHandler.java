@@ -12,6 +12,8 @@
  */
 package com.coding.zxm.mqtt_master.service;
 
+import android.support.annotation.NonNull;
+
 /**
  * Interface for simple trace handling, pass the trace message to trace
  * callback.
@@ -28,7 +30,7 @@ public interface MqttTraceHandler {
 	 * @param message
 	 *            the text to be traced
 	 */
-	void traceDebug(String tag, String message);
+	void traceDebug(@NonNull String tag, @NonNull String message);
 
 	/**
 	 * Trace error information
@@ -38,7 +40,7 @@ public interface MqttTraceHandler {
 	 * @param message
 	 *            the text to be traced
 	 */
-	void traceError(String tag, String message);
+	void traceError(@NonNull String tag, @NonNull String message);
 
 	/**
 	 * trace exceptions
@@ -50,7 +52,7 @@ public interface MqttTraceHandler {
 	 * @param e
 	 *            the exception
 	 */
-	void traceException(String tag, String message,
-                        Exception e);
+	void traceException(@NonNull String tag, @NonNull String message,
+						@NonNull Exception e);
 
 }

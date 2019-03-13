@@ -11,6 +11,9 @@ import com.orhanobut.logger.LogStrategy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Created by ZhangXinmin on 2019/2/28.
@@ -20,6 +23,7 @@ public class CustomDiskLogStrategy implements LogStrategy {
 
     @NonNull
     private final Handler handler;
+
 
     public CustomDiskLogStrategy(@NonNull Handler handler) {
         this.handler = handler;
@@ -36,11 +40,13 @@ public class CustomDiskLogStrategy implements LogStrategy {
         @NonNull
         private final String folder;
         private final int maxFileSize;
+        private final DateFormat dateFormat;
 
         DiskWriteHandler(@NonNull Looper looper, @NonNull String folder, int maxFileSize) {
             super(looper);
             this.folder = folder;
             this.maxFileSize = maxFileSize;
+            this.dateFormat = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
         }
 
         @SuppressWarnings("checkstyle:emptyblock")
@@ -49,7 +55,7 @@ public class CustomDiskLogStrategy implements LogStrategy {
             String content = (String) msg.obj;
 
             FileWriter fileWriter = null;
-            File logFile = getLogFile(folder, "Logs");
+            File logFile = getLogFile(folder, "logs");
 
             try {
                 fileWriter = new FileWriter(logFile, true);
@@ -91,11 +97,14 @@ public class CustomDiskLogStrategy implements LogStrategy {
             File newFile;
             File existingFile = null;
 
-            newFile = new File(folder, String.format("%s_%s.txt", fileName, newFileCount));
+            newFile = new File(folder, String.format("%s_%s_%s.txt", fileName,
+                    dateFormat.format(System.currentTimeMillis()), newFileCount));
+
             while (newFile.exists()) {
                 existingFile = newFile;
                 newFileCount++;
-                newFile = new File(folder, String.format("%s_%s.txt", fileName, newFileCount));
+                newFile = new File(folder, String.format("%s_%s_%s.txt", fileName,
+                        dateFormat.format(System.currentTimeMillis()), newFileCount));
             }
 
             if (existingFile != null) {
