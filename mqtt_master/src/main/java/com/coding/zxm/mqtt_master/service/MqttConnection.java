@@ -647,7 +647,8 @@ class MqttConnection implements MqttCallbackExtended {
         }
     }
 
-    public void subscribe(String[] topicFilters, int[] qos, String invocationContext, String activityToken, IMqttMessageListener[] messageListeners) {
+    public void subscribe(String[] topicFilters, int[] qos, String invocationContext,
+                          String activityToken, IMqttMessageListener[] messageListeners) {
         service.traceDebug(TAG, "subscribe({" + Arrays.toString(topicFilters) + "}," + Arrays.toString(qos) + ",{"
                 + invocationContext + "}, {" + activityToken + "}");
         final Bundle resultBundle = new Bundle();
