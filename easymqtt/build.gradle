@@ -33,6 +33,5 @@ dependencies {
     //mqtt client
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
     implementation "org.eclipse.paho:org.eclipse.paho.android.service:$rootProject.mqttServiceVersion"
-
     api 'com.orhanobut:logger:2.2.0'
 }

@@ -7,8 +7,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.zxm.easymqtt.client.MqttClientManager;
-import com.zxm.easymqtt.listener.MqttActionListener;
+import com.coding.zxm.mqtt_master.client.MqttClientManager;
+import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseFragment;
 

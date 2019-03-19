@@ -30,6 +30,9 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+import com.coding.zxm.mqtt_master.util.TimeUtils;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -323,6 +326,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     void reconnect() {
         traceDebug(TAG, "Reconnect to server, client size=" + connections.size());
+        Log.e(TAG, TAG + "..reconnect()" + TimeUtils.getNowString());
         for (MqttConnection client : connections.values()) {
             traceDebug("Reconnect Client:",
                     client.getClientId() + '/' + client.getServerURI());
@@ -564,6 +568,8 @@ public class MqttService extends Service implements MqttTraceHandler {
         // create somewhere to buffer received messages until
         // we know that they have been passed to the application
         messageStore = new DatabaseMessageStore(this, this);
+
+        Log.d(TAG, TAG + "..onCreate() : " + TimeUtils.getNowString());
     }
 
 
@@ -587,7 +593,7 @@ public class MqttService extends Service implements MqttTraceHandler {
         //close detabase
         if (this.messageStore != null)
             this.messageStore.close();
-
+        Log.d(TAG, TAG + "..onDestroy() : " + TimeUtils.getNowString());
         super.onDestroy();
     }
 
@@ -602,6 +608,7 @@ public class MqttService extends Service implements MqttTraceHandler {
         String activityToken = intent
                 .getStringExtra(MqttServiceConstants.CALLBACK_ACTIVITY_TOKEN);
         mqttServiceBinder.setActivityToken(activityToken);
+        Log.d(TAG, TAG + "..onBind() : " + TimeUtils.getNowString());
         return mqttServiceBinder;
     }
 
@@ -613,7 +620,7 @@ public class MqttService extends Service implements MqttTraceHandler {
         // run till explicitly stopped, restart when
         // process restarted
         registerBroadcastReceivers();
-
+        Log.d(TAG, TAG + "..onStartCommand() : " + TimeUtils.getNowString());
         return START_STICKY;
     }
 
@@ -676,6 +683,9 @@ public class MqttService extends Service implements MqttTraceHandler {
             //dataBundle.putString(MqttServiceConstants.CALLBACK_TRACE_ID, traceCallbackId);
             dataBundle.putString(MqttServiceConstants.CALLBACK_ERROR_MESSAGE, message);
             callbackToActivity(traceCallbackId, Status.ERROR, dataBundle);
+
+            Log.d(TAG, TAG + "..traceCallback() .. severity : " + severity + "..tag : " + tag +
+                    "..message : " + message);
         }
     }
 
@@ -805,6 +815,9 @@ public class MqttService extends Service implements MqttTraceHandler {
         @SuppressLint({"Wakelock", "InvalidWakeLockTag"})
         public void onReceive(Context context, Intent intent) {
             traceDebug(TAG, "Internal network status receive.");
+            Log.e(TAG, "NetworkConnectionIntentReceiver..Internal network status receive."
+                    + TimeUtils.getNowString());
+
             // we protect against the phone switching off
             // by requesting a wake lock - we request the minimum possible wake
             // lock - just enough to keep the CPU running until we've finished
@@ -846,6 +859,9 @@ public class MqttService extends Service implements MqttTraceHandler {
                     backgroundDataEnabled = true;
                     // we have the Internet connection - have another try at
                     // connecting
+                    Log.e(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
+                            + TimeUtils.getNowString());
+
                     reconnect();
                 }
             } else {

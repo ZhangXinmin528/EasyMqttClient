@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zxm.easymqttclient">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.MainActivity">
@@ -35,6 +37,8 @@
             android:name=".activity.ConnectionDetialActivity"
             android:label="@string/all_subscibe_publish"
             android:screenOrientation="portrait" />
+
+        <service android:name="com.coding.zxm.mqtt_master.service.MqttService" />
     </application>
 
 </manifest>

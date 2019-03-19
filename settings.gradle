@@ -1,1 +1,3 @@
-include ':app', ':easymqtt', ':mqtt_master'
+include ':app'
+include ':easymqtt'
+include ':mqtt_master'

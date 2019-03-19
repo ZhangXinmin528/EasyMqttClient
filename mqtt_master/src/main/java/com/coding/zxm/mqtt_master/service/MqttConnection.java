@@ -762,6 +762,7 @@ class MqttConnection implements MqttCallbackExtended {
     public void connectionLost(Throwable why) {
         service.traceDebug(TAG, "connectionLost(" + why.getMessage() + ")");
         disconnected = true;
+        Log.d(TAG, TAG + "..connectionLost() .. why : " + why.getMessage());
         try {
             if (!this.connectOptions.isAutomaticReconnect()) {
                 myClient.disconnect(null, new IMqttActionListener() {
