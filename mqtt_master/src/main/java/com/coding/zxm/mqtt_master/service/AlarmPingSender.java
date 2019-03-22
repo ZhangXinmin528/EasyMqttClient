@@ -23,8 +23,8 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 
+import com.coding.zxm.mqtt_master.util.MLogger;
 import com.coding.zxm.mqtt_master.util.TimeUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -74,20 +74,25 @@ class AlarmPingSender implements MqttPingSender {
         String action = MqttServiceConstants.PING_SENDER
                 + comms.getClient().getClientId();
         service.registerReceiver(alarmReceiver, new IntentFilter(action));
-        Log.d(TAG, "Register alarmreceiver to MqttService : " + action);
+        MLogger.i(TAG, "Register alarmreceiver to MqttService : " + action);
+        MLogger.file(TAG, "Register alarmreceiver to MqttService : " + action);
 
         pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
                 action), PendingIntent.FLAG_UPDATE_CURRENT);
 
         schedule(comms.getKeepAlive());
-        Log.d(TAG, "start()..keepAlive : " + comms.getKeepAlive());
+        MLogger.i(TAG, "start()..keepAlive : " + comms.getKeepAlive());
         hasStarted = true;
     }
 
     @Override
     public void stop() {
 
-        Log.d(TAG, "Unregister alarmreceiver to MqttService clientId : " + comms.getClient().getClientId());
+        MLogger.i(TAG, "Unregister alarmreceiver to MqttService clientId : "
+                + comms.getClient().getClientId());
+        MLogger.file(TAG, "Unregister alarmreceiver to MqttService clientId : "
+                + comms.getClient().getClientId());
+
         if (hasStarted) {
             if (pendingIntent != null) {
                 // Cancel Alarm.
@@ -108,18 +113,24 @@ class AlarmPingSender implements MqttPingSender {
     public void schedule(long delayInMilliseconds) {
         long nextAlarmInMilliseconds = System.currentTimeMillis()
                 + delayInMilliseconds;
-        Log.d(TAG, "Schedule next alarm at : " + TimeUtils.millis2String(nextAlarmInMilliseconds, DATE_FORMAT));
+        final String timeStamp = TimeUtils.millis2String(nextAlarmInMilliseconds, DATE_FORMAT);
+
+        MLogger.i(TAG, "Schedule next alarm at : " + timeStamp);
+        MLogger.file(TAG, "Schedule next alarm at : " + timeStamp);
+
         AlarmManager alarmManager = (AlarmManager) service
                 .getSystemService(Service.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= 23) {
             // In SDK 23 and above, dosing will prevent setExact, setExactAndAllowWhileIdle will force
             // the device to run this task whilst dosing.
-            Log.d(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
+            MLogger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
+            MLogger.file(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else if (Build.VERSION.SDK_INT >= 19) {
-            Log.d(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
+            MLogger.i(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
+            MLogger.file(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else {
@@ -144,8 +155,9 @@ class AlarmPingSender implements MqttPingSender {
             // This guarantees that the phone will not sleep until you have
             // finished handling the broadcast.", but this class still get
             // a wake lock to wait for ping finished.
-
-            Log.d(TAG, "Sending Ping at : " + TimeUtils.getNowString());
+            final String timeStamp = TimeUtils.getNowString();
+            MLogger.i(TAG, "Sending Ping at : " + timeStamp);
+            MLogger.file(TAG, "Sending Ping at : " + timeStamp);
 
             PowerManager pm = (PowerManager) service
                     .getSystemService(Service.POWER_SERVICE);
@@ -159,8 +171,11 @@ class AlarmPingSender implements MqttPingSender {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.d(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
-                            + TimeUtils.getNowString());
+                    final String timeStamp = TimeUtils.getNowString();
+                    MLogger.i(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
+                            + timeStamp);
+                    MLogger.file(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
+                            + timeStamp);
                     //Release wakelock when it is done.
                     wakelock.release();
                 }
@@ -168,8 +183,11 @@ class AlarmPingSender implements MqttPingSender {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    Log.d(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
-                            + TimeUtils.getNowString());
+                    final String timeStamp = TimeUtils.getNowString();
+                    MLogger.i(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
+                            + timeStamp);
+                    MLogger.file(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
+                            + timeStamp);
                     //Release wakelock when it is done.
                     wakelock.release();
                 }

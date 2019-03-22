@@ -119,6 +119,7 @@ public class MqttAndroidClient extends BroadcastReceiver implements
                              String clientId) {
         this(context, serverURI, clientId, null, Ack.AUTO_ACK);
     }
+
     /**
      * Constructor - create an MqttAndroidClient that can be used to communicate
      * with an MQTT server on android
@@ -1172,6 +1173,8 @@ public class MqttAndroidClient extends BroadcastReceiver implements
         if (mqttService != null)
             mqttService.setTraceEnabled(traceEnabled);
     }
+
+    //TODO:MqttAndroidClient接收广播：断开连接等
 
     /**
      * <p>

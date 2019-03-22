@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.coding.zxm.mqtt_master.service.MqttAndroidClient;
+import com.coding.zxm.mqtt_master.util.MLogger;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
@@ -22,7 +23,7 @@ public final class MqttConfig {
      * Default keep alive value
      */
     public static final int defaultKeepAlive = 10;
-
+    private static final String TAG = MqttConfig.class.getSimpleName();
     private Builder builder;
 
     public MqttConfig(@NonNull Builder builder) {
@@ -163,8 +164,11 @@ public final class MqttConfig {
          * init MqttConnectOptions
          */
         private void setUpOptions() {
-            if (mConnectOptions == null)
-                mConnectOptions = new MqttConnectOptions();
+            if (mConnectOptions != null) {
+                mConnectOptions = null;
+            }
+            mConnectOptions = new MqttConnectOptions();
+
             mConnectOptions.setCleanSession(P.mCleanSession);
             mConnectOptions.setConnectionTimeout(P.mTimeout);
             //Sets the "keep alive" interval.
@@ -210,6 +214,7 @@ public final class MqttConfig {
             if (mMqttAndroidClient == null && !TextUtils.isEmpty(P.mUri) &&
                     !TextUtils.isEmpty(P.mClientId)) {
                 mMqttAndroidClient = new MqttAndroidClient(P.mContext, P.mUri, P.mClientId);
+                MLogger.i(TAG, "Uri : " + P.mUri + "..clientId : " + P.mClientId);
             }
 
             return new MqttConfig(this);

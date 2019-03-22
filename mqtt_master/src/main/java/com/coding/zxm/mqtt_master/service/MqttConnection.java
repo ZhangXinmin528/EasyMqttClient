@@ -19,6 +19,8 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
+import com.coding.zxm.mqtt_master.util.MLogger;
+
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -753,6 +755,8 @@ class MqttConnection implements MqttCallbackExtended {
 
     // Implement MqttCallback
 
+    //TODO：MqttConnection发送断开连接广播
+
     /**
      * Callback for connectionLost
      *
@@ -762,7 +766,6 @@ class MqttConnection implements MqttCallbackExtended {
     public void connectionLost(Throwable why) {
         service.traceDebug(TAG, "connectionLost(" + why.getMessage() + ")");
         disconnected = true;
-        Log.d(TAG, TAG + "..connectionLost() .. why : " + why.getMessage());
         try {
             if (!this.connectOptions.isAutomaticReconnect()) {
                 myClient.disconnect(null, new IMqttActionListener() {
@@ -954,7 +957,7 @@ class MqttConnection implements MqttCallbackExtended {
 
         if (connectOptions.isAutomaticReconnect()) {
             //The Automatic reconnect functionality is enabled here
-            Log.i(TAG, "Requesting Automatic reconnect using New Java AC");
+            MLogger.i(TAG, "Requesting Automatic reconnect using New Java AC");
             final Bundle resultBundle = new Bundle();
             resultBundle.putString(
                     MqttServiceConstants.CALLBACK_ACTIVITY_TOKEN,
@@ -966,7 +969,7 @@ class MqttConnection implements MqttCallbackExtended {
             try {
                 myClient.reconnect();
             } catch (MqttException ex) {
-                Log.e(TAG, "Exception occurred attempting to reconnect: " + ex.getMessage());
+                MLogger.e(TAG, "Exception occurred attempting to reconnect: " + ex.getMessage());
                 setConnectingState(false);
                 handleException(resultBundle, ex);
             }

@@ -30,8 +30,8 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
+import com.coding.zxm.mqtt_master.util.MLogger;
 import com.coding.zxm.mqtt_master.util.TimeUtils;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -326,7 +326,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     void reconnect() {
         traceDebug(TAG, "Reconnect to server, client size=" + connections.size());
-        Log.e(TAG, TAG + "..reconnect()" + TimeUtils.getNowString());
+        MLogger.e(TAG, "reconnect()" + TimeUtils.getNowString());
         for (MqttConnection client : connections.values()) {
             traceDebug("Reconnect Client:",
                     client.getClientId() + '/' + client.getServerURI());
@@ -560,6 +560,8 @@ public class MqttService extends Service implements MqttTraceHandler {
     @Override
     public void onCreate() {
         super.onCreate();
+        MLogger.i(TAG, "onCreate() : " + TimeUtils.getNowString());
+        MLogger.file(TAG, "onCreate() : " + TimeUtils.getNowString());
 
         // create a binder that will let the Activity UI send
         // commands to the Service
@@ -569,7 +571,6 @@ public class MqttService extends Service implements MqttTraceHandler {
         // we know that they have been passed to the application
         messageStore = new DatabaseMessageStore(this, this);
 
-        Log.d(TAG, TAG + "..onCreate() : " + TimeUtils.getNowString());
     }
 
 
@@ -578,6 +579,9 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public void onDestroy() {
+        final String timeStamp = TimeUtils.getNowString();
+        MLogger.i(TAG, "onDestroy() : " + timeStamp);
+        MLogger.file(TAG, "onDestroy() : " + timeStamp);
         // disconnect immediately
         for (MqttConnection client : connections.values()) {
             client.disconnect(null, null);
@@ -591,9 +595,9 @@ public class MqttService extends Service implements MqttTraceHandler {
         unregisterBroadcastReceivers();
 
         //close detabase
-        if (this.messageStore != null)
+        if (this.messageStore != null) {
             this.messageStore.close();
-        Log.d(TAG, TAG + "..onDestroy() : " + TimeUtils.getNowString());
+        }
         super.onDestroy();
     }
 
@@ -602,13 +606,15 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public IBinder onBind(Intent intent) {
+        final String timeStamp = TimeUtils.getNowString();
+        MLogger.file(TAG, "onBind() : " + timeStamp);
+        MLogger.i(TAG, "onBind() : " + timeStamp);
         // What we pass back to the Activity on binding -
         // a reference to ourself, and the activityToken
         // we were given when started
         String activityToken = intent
                 .getStringExtra(MqttServiceConstants.CALLBACK_ACTIVITY_TOKEN);
         mqttServiceBinder.setActivityToken(activityToken);
-        Log.d(TAG, TAG + "..onBind() : " + TimeUtils.getNowString());
         return mqttServiceBinder;
     }
 
@@ -617,10 +623,12 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
+        final String timeStamp = TimeUtils.getNowString();
+        MLogger.file(TAG, "onStartCommand() : " + timeStamp);
+        MLogger.i(TAG, "onStartCommand() : " + timeStamp);
         // run till explicitly stopped, restart when
         // process restarted
         registerBroadcastReceivers();
-        Log.d(TAG, TAG + "..onStartCommand() : " + TimeUtils.getNowString());
         return START_STICKY;
     }
 
@@ -684,7 +692,8 @@ public class MqttService extends Service implements MqttTraceHandler {
             dataBundle.putString(MqttServiceConstants.CALLBACK_ERROR_MESSAGE, message);
             callbackToActivity(traceCallbackId, Status.ERROR, dataBundle);
 
-            Log.d(TAG, TAG + "..traceCallback() .. severity : " + severity + "..tag : " + tag +
+            //TODO:追踪回调行为
+            MLogger.i(TAG, "traceCallback() .. severity : " + severity + "..tag : " + tag +
                     "..message : " + message);
         }
     }
@@ -815,7 +824,7 @@ public class MqttService extends Service implements MqttTraceHandler {
         @SuppressLint({"Wakelock", "InvalidWakeLockTag"})
         public void onReceive(Context context, Intent intent) {
             traceDebug(TAG, "Internal network status receive.");
-            Log.e(TAG, "NetworkConnectionIntentReceiver..Internal network status receive."
+            MLogger.i(TAG, "NetworkConnectionIntentReceiver..Internal network status receive."
                     + TimeUtils.getNowString());
 
             // we protect against the phone switching off
@@ -828,6 +837,11 @@ public class MqttService extends Service implements MqttTraceHandler {
                 wl.acquire();
             }
             traceDebug(TAG, "Reconnect for Network recovery.");
+            final String timeStamp = TimeUtils.getNowString();
+            MLogger.file(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
+                    + timeStamp);
+            MLogger.i(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
+                    + timeStamp);
             if (isOnline()) {
                 traceDebug(TAG, "Online,Mqtt will reconnect once again.");
                 // we have an internet connection - have another try at
@@ -859,7 +873,7 @@ public class MqttService extends Service implements MqttTraceHandler {
                     backgroundDataEnabled = true;
                     // we have the Internet connection - have another try at
                     // connecting
-                    Log.e(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
+                    MLogger.e(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
                             + TimeUtils.getNowString());
 
                     reconnect();

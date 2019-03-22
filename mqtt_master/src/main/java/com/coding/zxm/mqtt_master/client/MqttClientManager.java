@@ -5,11 +5,11 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.MqttConnectionCallback;
 import com.coding.zxm.mqtt_master.service.MqttAndroidClient;
+import com.coding.zxm.mqtt_master.util.MLogger;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -29,6 +29,8 @@ public final class MqttClientManager {
 
     private static MqttClientManager INSTANCE;
 
+    private MqttConfig mqttConfig;
+
     private MqttAndroidClient mqttClient;
     private MqttConnectOptions mqttOptions;
 
@@ -43,16 +45,36 @@ public final class MqttClientManager {
     }
 
     /**
-     * Set
+     * Get mqtt config.
      *
-     * @param config
+     * @return
      */
-    public void resetConfig(@NonNull MqttConfig config) {
+    public MqttConfig getMqttConfig() {
+        return mqttConfig;
+    }
+
+    /**
+     * init MqttClient
+     * <p>
+     * You must init mqtt config before connected.
+     * </p>
+     *
+     * @param config {@link MqttConfig}
+     */
+    public void init(@NonNull MqttConfig config) {
         if (config != null) {
-            mqttClient = config.getMqttAndroidClient();
-            mqttOptions = config.getConnectOptions();
-        } else {
-            Log.e(TAG, "mqtt config is null!");
+            mqttConfig = config;
+        }
+        if (mqttClient != null) {
+            mqttClient = null;
+        }
+        if (mqttOptions != null) {
+            mqttOptions = null;
+        }
+        if (mqttConfig != null) {
+            mqttClient = mqttConfig.getMqttAndroidClient();
+            mqttOptions = mqttConfig.getConnectOptions();
+            mqttClient.setTraceEnabled(true);
         }
     }
 
@@ -65,17 +87,17 @@ public final class MqttClientManager {
     public void connect(@NonNull MqttActionListener listener, MqttConnectionCallback callback) {
 
         if (mqttClient == null) {
-            Log.e(TAG, "MqttAndroidClient is null,con't build connection!");
+            MLogger.e(TAG, "MqttAndroidClient is null,con't build connection!");
             return;
         }
 
         if (mqttOptions == null) {
-            Log.e(TAG, "MqttConnectOptions is null,con't build connection!");
+            MLogger.e(TAG, "MqttConnectOptions is null,con't build connection!");
             return;
         }
 
         if (mqttClient.isConnected()) {
-            Log.e(TAG, "This client has built connection to server!");
+            MLogger.e(TAG, "This client has built connection to server!");
             return;
         }
 
@@ -86,8 +108,16 @@ public final class MqttClientManager {
                     if (callback != null) {
                         callback.connectionLost(cause);
                     }
-                    Log.e(TAG, "The connection to the server is lost : " + cause != null ?
-                            cause.toString() : "cause is empty!");
+                    if (cause != null) {
+                        MLogger.e(TAG, "connectionLost(): " + cause.getClass().getSimpleName());
+                        if (cause instanceof MqttException) {
+                            final MqttException exception = (MqttException) cause;
+                            MLogger.e(TAG, "The connection to the server is lost : " + exception.toString());
+                        }
+                    } else {
+                        MLogger.e(TAG, "The connection to the server is lost : cause is null!");
+                    }
+
                 }
 
                 @Override
@@ -97,15 +127,17 @@ public final class MqttClientManager {
                     if (callback != null) {
                         callback.messageArrived(topic, msg, qos);
                     }
-                    Log.i(TAG, "Mqtt client get message from server[message : " + msg + ";'qos' : " + qos + "]");
+                    MLogger.i(TAG, "Mqtt client get message from server");
+                    MLogger.json(msg);
                 }
+
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
                     if (callback != null) {
                         callback.deliveryComplete();
                     }
-                    Log.i(TAG, "Mqtt client delivery message complete!");
+                    MLogger.i("Mqtt client delivery message complete!");
                 }
             });
             mqttClient.connect(mqttOptions, null, new IMqttActionListener() {
@@ -114,7 +146,7 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onSuccess();
                     }
-                    Log.i(TAG, "[connect()]-->Mqtt client build connection success!");
+                    MLogger.i("[connect()]-->Mqtt client build connection success!");
                 }
 
                 @Override
@@ -122,11 +154,11 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onFailure(exception);
                     }
-                    Log.e(TAG, "[connect()]-->Mqtt client build connection failed!");
+                    MLogger.e("[connect()]-->Mqtt client build connection failed!");
                 }
             });
         } catch (MqttException e) {
-            Log.e(TAG, "[connect()]-->Mqtt client build connection got exception : " + e.toString());
+            MLogger.e(TAG, "[connect()]-->Mqtt client build connection got exception : " + e.toString());
         }
     }
 
@@ -143,25 +175,25 @@ public final class MqttClientManager {
                           @NonNull MqttActionListener listener) {
 
         if (mqttClient == null) {
-            Log.e(TAG, "MqttAndroidClient is null,con't build connection!");
+            MLogger.e(TAG, "MqttAndroidClient is null,con't build connection!");
             return;
         }
 
         if (mqttOptions == null) {
-            Log.e(TAG, "MqttConnectOptions is null,con't build connection!");
+            MLogger.e(TAG, "MqttConnectOptions is null,con't build connection!");
             return;
         }
 
         if (!mqttClient.isConnected()) {
-            Log.e(TAG, "This client hasn't built connection to server!");
+            MLogger.e(TAG, "This client hasn't built connection to server!");
             return;
         }
 
-        Log.i(TAG, "[subscribe()]-->Mqtt client is going to subscribe the topic : [" + topic + "]"
+        MLogger.i(TAG, "[subscribe()]-->Mqtt client is going to subscribe the topic : [" + topic + "]"
                 + mqttClient.hashCode());
 
         if (TextUtils.isEmpty(topic) || listener == null) {
-            Log.e(TAG, "[subscribe()]-->Mqtt client subscribe params is illegal!");
+            MLogger.e(TAG, "[subscribe()]-->Mqtt client subscribe params is illegal!");
             return;
         }
         if (mqttClient != null && mqttClient.isConnected()) {
@@ -172,7 +204,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Log.i(TAG, "[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
+                        MLogger.i("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
                     }
 
                     @Override
@@ -180,12 +212,12 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Log.e(TAG, "[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
+                        MLogger.e("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
                     }
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-                Log.e(TAG, "[subscribe()]-->Mqtt client subscribe got exception : " + e.toString());
+                MLogger.e(TAG, "[subscribe()]-->Mqtt client subscribe got exception : " + e.toString());
             }
 
         }
@@ -206,25 +238,25 @@ public final class MqttClientManager {
                         boolean retained, @NonNull MqttActionListener listener) {
 
         if (mqttClient == null) {
-            Log.e(TAG, "MqttAndroidClient is null,con't build connection!");
+            MLogger.e(TAG, "MqttAndroidClient is null,con't build connection!");
             return;
         }
 
         if (mqttOptions == null) {
-            Log.e(TAG, "MqttConnectOptions is null,con't build connection!");
+            MLogger.e(TAG, "MqttConnectOptions is null,con't build connection!");
             return;
         }
 
         if (!mqttClient.isConnected()) {
-            Log.e(TAG, "This client hasn't built connection to server!");
+            MLogger.e(TAG, "This client hasn't built connection to server!");
             return;
         }
 
-        Log.i(TAG, "[publish()]-->Mqtt client is going to publish the topic : [" + topic + "]-->message : ["
+        MLogger.i(TAG, "[publish()]-->Mqtt client is going to publish the topic : [" + topic + "]-->message : ["
                 + message + "]-->qos : [" + qos + "]-->retained : [" + retained + "]" + mqttClient.hashCode());
 
         if (TextUtils.isEmpty(topic) || TextUtils.isEmpty(message) || listener == null) {
-            Log.e(TAG, "[publish()]-->Mqtt client publish params is illegal!");
+            MLogger.e(TAG, "[publish()]-->Mqtt client publish params is illegal!");
             return;
         }
         try {
@@ -234,7 +266,7 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onSuccess();
                     }
-                    Log.i(TAG, "[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
+                    MLogger.i("[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
                 }
 
                 @Override
@@ -242,15 +274,14 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onFailure(exception);
                     }
-                    Log.e(TAG, "[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
+                    MLogger.e("[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
                 }
             });
         } catch (MqttException e) {
             e.printStackTrace();
-            Log.e(TAG, "[publish()]-->Mqtt client publish got exception : " + e.toString());
+            MLogger.e(TAG, "[publish()]-->Mqtt client publish got exception : " + e.toString());
         }
     }
-
 
     /**
      * Disconnects from the server.
@@ -259,11 +290,11 @@ public final class MqttClientManager {
      *                 completes. Use null if not required.
      */
     public void disconnect(@NonNull MqttActionListener listener) {
-        Log.i(TAG, "[disconnect()]-->Mqtt client is going to disconnect!" + mqttClient.hashCode());
+        MLogger.i(TAG, "[disconnect()]-->Mqtt client is going to disconnect!" + mqttClient.hashCode());
 
         if (mqttClient != null) {
             if (!mqttClient.isConnected()) {
-                Log.i(TAG, "[disconnect()]-->Mqtt client has not build the connection!");
+                MLogger.i(TAG, "[disconnect()]-->Mqtt client has not build the connection!");
                 return;
             }
 
@@ -274,7 +305,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        Log.i(TAG, "[disconnect()]-->Mqtt client disconnect success!");
+                        MLogger.i("[disconnect()]-->Mqtt client disconnect success!");
                     }
 
                     @Override
@@ -282,13 +313,26 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        Log.e(TAG, "[disconnect()]-->Mqtt client disconnect falied!");
+                        MLogger.e("[disconnect()]-->Mqtt client disconnect falied!");
                     }
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-                Log.e(TAG, "[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
+                MLogger.e(TAG, "[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
             }
         }
     }
+
+    /**
+     * Determines if this client is currently connected to the server.
+     *
+     * @return <code>true</code> if connected, <code>false</code> otherwise.
+     */
+    public boolean isConnected() {
+        if (mqttClient != null) {
+            return mqttClient.isConnected();
+        }
+        return false;
+    }
+
 }

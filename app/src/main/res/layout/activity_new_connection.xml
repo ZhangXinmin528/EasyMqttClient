@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:focusable="true"
         android:orientation="vertical"
         android:paddingLeft="12dp"
         android:paddingRight="12dp">
@@ -40,7 +41,6 @@
                 android:layout_height="match_parent"
                 android:hint="@string/all_input_server"
                 android:inputType="text"
-                android:text="119.254.229.167"
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
         </android.support.design.widget.TextInputLayout>
@@ -56,10 +56,16 @@
                 android:layout_height="match_parent"
                 android:hint="@string/all_input_port"
                 android:inputType="number"
-                android:text="3080"
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="填写相关属性可自定义连接配置"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout

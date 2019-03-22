@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -81,18 +82,21 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
         final String port = mPortEt.getEditableText().toString().trim();
         final boolean clearSession = mSessionCb.isChecked();
 
-        final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
-                .setClientId(clientId)
-                .setHost(host)
-                .setPort(port)
-                .setAutomaticReconnect(true)
-                .setCleanSession(clearSession)
-                .setKeepalive(20)
-                .setUserName("")
-                .setPassWord("")
-                .create();
+        if (!TextUtils.isEmpty(clientId) && !TextUtils.isEmpty(host) && !TextUtils.isEmpty(port)) {
+            final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
+                    .setClientId(clientId)
+                    .setHost(host)
+                    .setPort(port)
+                    .setAutomaticReconnect(true)
+                    .setCleanSession(clearSession)
+                    .setKeepalive(20)
+                    .setUserName("")
+                    .setPassWord("")
+                    .create();
 
-        MqttClientManager.getInstance().resetConfig(config);
+            MqttClientManager.getInstance().init(config);
+        }
+
 
         MqttClientManager
                 .getInstance()
