@@ -179,7 +179,7 @@ public final class MLogger {
 
     public static void file(final Object content) {
         if (LOG_CONFIG != null)
-            log(FILE | D, LOG_CONFIG.mGlobalTag, content);
+            log(FILE | I, LOG_CONFIG.mGlobalTag, content);
     }
 
     public static void file(@TYPE final int type, final Object content) {
@@ -188,7 +188,7 @@ public final class MLogger {
     }
 
     public static void file(final String tag, final Object content) {
-        log(FILE | D, tag, content);
+        log(FILE | I, tag, content);
     }
 
     public static void file(@TYPE final int type, final String tag, final Object content) {
@@ -197,7 +197,7 @@ public final class MLogger {
 
     public static void json(final String content) {
         if (LOG_CONFIG != null)
-            log(JSON | D, LOG_CONFIG.mGlobalTag, content);
+            log(JSON | I, LOG_CONFIG.mGlobalTag, content);
     }
 
     public static void json(@TYPE final int type, final String content) {
@@ -206,7 +206,7 @@ public final class MLogger {
     }
 
     public static void json(final String tag, final String content) {
-        log(JSON | D, tag, content);
+        log(JSON | I, tag, content);
     }
 
     public static void json(@TYPE final int type, final String tag, final String content) {
@@ -215,7 +215,7 @@ public final class MLogger {
 
     public static void xml(final String content) {
         if (LOG_CONFIG != null)
-            log(XML | D, LOG_CONFIG.mGlobalTag, content);
+            log(XML | I, LOG_CONFIG.mGlobalTag, content);
     }
 
     public static void xml(@TYPE final int type, final String content) {
@@ -224,7 +224,7 @@ public final class MLogger {
     }
 
     public static void xml(final String tag, final String content) {
-        log(XML | D, tag, content);
+        log(XML | I, tag, content);
     }
 
     public static void xml(@TYPE final int type, final String tag, final String content) {
@@ -252,7 +252,7 @@ public final class MLogger {
         final TagHead tagHead = processTagAndHead(tag);
 
         final String body = processBody(type_high, contents);
-        if (LOG_CONFIG.mLog2ConsoleSwitch && type_low >= LOG_CONFIG.mConsoleFilter && type_high != FILE) {
+        if (LOG_CONFIG.mLog2ConsoleSwitch && type_low >= LOG_CONFIG.mConsoleFilter) {
             print2Console(type_low, tagHead.tag, tagHead.consoleHead, body);
         }
         if ((LOG_CONFIG.mLog2FileSwitch && type_high == FILE) && type_low >= LOG_CONFIG.mFileFilter) {

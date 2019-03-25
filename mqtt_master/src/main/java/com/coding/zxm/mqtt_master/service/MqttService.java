@@ -560,7 +560,6 @@ public class MqttService extends Service implements MqttTraceHandler {
     @Override
     public void onCreate() {
         super.onCreate();
-        MLogger.i(TAG, "onCreate() : " + TimeUtils.getNowString());
         MLogger.file(TAG, "onCreate() : " + TimeUtils.getNowString());
 
         // create a binder that will let the Activity UI send
@@ -579,9 +578,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public void onDestroy() {
-        final String timeStamp = TimeUtils.getNowString();
-        MLogger.i(TAG, "onDestroy() : " + timeStamp);
-        MLogger.file(TAG, "onDestroy() : " + timeStamp);
+        MLogger.file(TAG, "onDestroy() : " + TimeUtils.getNowString());
         // disconnect immediately
         for (MqttConnection client : connections.values()) {
             client.disconnect(null, null);
@@ -606,9 +603,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        final String timeStamp = TimeUtils.getNowString();
-        MLogger.file(TAG, "onBind() : " + timeStamp);
-        MLogger.i(TAG, "onBind() : " + timeStamp);
+        MLogger.file(TAG, "onBind() : " + TimeUtils.getNowString());
         // What we pass back to the Activity on binding -
         // a reference to ourself, and the activityToken
         // we were given when started
@@ -623,9 +618,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
-        final String timeStamp = TimeUtils.getNowString();
-        MLogger.file(TAG, "onStartCommand() : " + timeStamp);
-        MLogger.i(TAG, "onStartCommand() : " + timeStamp);
+        MLogger.file(TAG, "onStartCommand() : " + TimeUtils.getNowString());
         // run till explicitly stopped, restart when
         // process restarted
         registerBroadcastReceivers();
@@ -837,11 +830,8 @@ public class MqttService extends Service implements MqttTraceHandler {
                 wl.acquire();
             }
             traceDebug(TAG, "Reconnect for Network recovery.");
-            final String timeStamp = TimeUtils.getNowString();
             MLogger.file(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
-                    + timeStamp);
-            MLogger.i(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
-                    + timeStamp);
+                    + TimeUtils.getNowString());
             if (isOnline()) {
                 traceDebug(TAG, "Online,Mqtt will reconnect once again.");
                 // we have an internet connection - have another try at
@@ -873,7 +863,7 @@ public class MqttService extends Service implements MqttTraceHandler {
                     backgroundDataEnabled = true;
                     // we have the Internet connection - have another try at
                     // connecting
-                    MLogger.e(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
+                    MLogger.file(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
                             + TimeUtils.getNowString());
 
                     reconnect();

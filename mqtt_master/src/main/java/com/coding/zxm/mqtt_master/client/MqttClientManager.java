@@ -109,13 +109,12 @@ public final class MqttClientManager {
                         callback.connectionLost(cause);
                     }
                     if (cause != null) {
-                        MLogger.e(TAG, "connectionLost(): " + cause.getClass().getSimpleName());
                         if (cause instanceof MqttException) {
                             final MqttException exception = (MqttException) cause;
-                            MLogger.e(TAG, "The connection to the server is lost : " + exception.toString());
+                            MLogger.file(MLogger.E,TAG, "The connection to the server is lost : " + exception.toString());
                         }
                     } else {
-                        MLogger.e(TAG, "The connection to the server is lost : cause is null!");
+                        MLogger.file(MLogger.E,TAG, "The connection to the server is lost : cause is null!");
                     }
 
                 }
@@ -127,7 +126,7 @@ public final class MqttClientManager {
                     if (callback != null) {
                         callback.messageArrived(topic, msg, qos);
                     }
-                    MLogger.i(TAG, "Mqtt client get message from server");
+                    MLogger.file(TAG, "Mqtt client message arrived!");
                     MLogger.json(msg);
                 }
 
@@ -137,7 +136,7 @@ public final class MqttClientManager {
                     if (callback != null) {
                         callback.deliveryComplete();
                     }
-                    MLogger.i("Mqtt client delivery message complete!");
+                    MLogger.file(TAG, "Mqtt client delivery message complete!");
                 }
             });
             mqttClient.connect(mqttOptions, null, new IMqttActionListener() {
@@ -146,7 +145,7 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onSuccess();
                     }
-                    MLogger.i("[connect()]-->Mqtt client build connection success!");
+                    MLogger.file(TAG, "[connect()]-->Mqtt client build connection success!");
                 }
 
                 @Override
@@ -154,11 +153,11 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onFailure(exception);
                     }
-                    MLogger.e("[connect()]-->Mqtt client build connection failed!");
+                    MLogger.file(MLogger.E, TAG, "[connect()]-->Mqtt client build connection failed!");
                 }
             });
         } catch (MqttException e) {
-            MLogger.e(TAG, "[connect()]-->Mqtt client build connection got exception : " + e.toString());
+            MLogger.e(MLogger.E, TAG, "[connect()]-->Mqtt client build connection got exception : " + e.toString());
         }
     }
 
@@ -204,7 +203,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        MLogger.i("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
+                        MLogger.file(TAG, "[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] success!");
                     }
 
                     @Override
@@ -212,7 +211,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        MLogger.e("[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
+                        MLogger.file(MLogger.E, "[subscribe()]-->Mqtt client subscribe the topic : [" + topic + "] falied!");
                     }
                 });
             } catch (MqttException e) {
@@ -266,7 +265,7 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onSuccess();
                     }
-                    MLogger.i("[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
+                    MLogger.file(TAG, "[publish()]-->Mqtt client publish the topic : [" + topic + "] success!");
                 }
 
                 @Override
@@ -274,7 +273,7 @@ public final class MqttClientManager {
                     if (listener != null) {
                         listener.onFailure(exception);
                     }
-                    MLogger.e("[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
+                    MLogger.file(MLogger.E, TAG, "[publish()]-->Mqtt client publish the topic : [" + topic + "] falied!");
                 }
             });
         } catch (MqttException e) {
@@ -305,7 +304,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onSuccess();
                         }
-                        MLogger.i("[disconnect()]-->Mqtt client disconnect success!");
+                        MLogger.file(TAG, "[disconnect()]-->Mqtt client disconnect success!");
                     }
 
                     @Override
@@ -313,7 +312,7 @@ public final class MqttClientManager {
                         if (listener != null) {
                             listener.onFailure(exception);
                         }
-                        MLogger.e("[disconnect()]-->Mqtt client disconnect falied!");
+                        MLogger.file(MLogger.E, TAG, "[disconnect()]-->Mqtt client disconnect falied!");
                     }
                 });
             } catch (MqttException e) {

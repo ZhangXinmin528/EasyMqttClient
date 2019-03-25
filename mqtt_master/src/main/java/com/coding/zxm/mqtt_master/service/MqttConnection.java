@@ -957,7 +957,7 @@ class MqttConnection implements MqttCallbackExtended {
 
         if (connectOptions.isAutomaticReconnect()) {
             //The Automatic reconnect functionality is enabled here
-            MLogger.i(TAG, "Requesting Automatic reconnect using New Java AC");
+            MLogger.file(TAG, "Requesting Automatic reconnect using New Java AC");
             final Bundle resultBundle = new Bundle();
             resultBundle.putString(
                     MqttServiceConstants.CALLBACK_ACTIVITY_TOKEN,

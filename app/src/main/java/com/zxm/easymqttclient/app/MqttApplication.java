@@ -26,12 +26,12 @@ public class MqttApplication extends Application {
 
         final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
                 .setClientId(clientId)
-                .setHost("119.253.83.48")
-                .setPort("80")
-                .setUserName("mqttad")//生产
-                .setPassWord("t@ikang@2019")
-//                .setHost("119.254.229.167")//测试
-//                .setPort("3080")
+//                .setHost("119.253.83.48")//生产
+//                .setPort("80")
+//                .setUserName("mqttad")
+//                .setPassWord("t@ikang@2019")
+                .setHost("119.254.229.167")//测试
+                .setPort("3080")
                 .setAutomaticReconnect(true)
                 .setCleanSession(true)
                 .setKeepalive(20)
@@ -44,5 +44,6 @@ public class MqttApplication extends Application {
         final MLogger.LogConfig logConfig = new MLogger.LogConfig(getApplicationContext())
                 .setLog2FileSwitch(true);
         MLogger.resetLogConfig(logConfig);
+        MLogger.i(logConfig.toString());
     }
 }
