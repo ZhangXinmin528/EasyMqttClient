@@ -300,6 +300,7 @@ class MqttConnection implements MqttCallbackExtended {
         releaseWakeLock();
     }
 
+    //TODO:断线重连发送广播
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         Bundle resultBundle = new Bundle();

@@ -78,7 +78,6 @@ class AlarmPingSender implements MqttPingSender {
                 action), PendingIntent.FLAG_UPDATE_CURRENT);
 
         schedule(comms.getKeepAlive());
-        MLogger.i(TAG, "start()..keepAlive : " + comms.getKeepAlive());
         hasStarted = true;
     }
 
@@ -117,11 +116,11 @@ class AlarmPingSender implements MqttPingSender {
         if (Build.VERSION.SDK_INT >= 23) {
             // In SDK 23 and above, dosing will prevent setExact, setExactAndAllowWhileIdle will force
             // the device to run this task whilst dosing.
-            MLogger.file(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
+            MLogger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else if (Build.VERSION.SDK_INT >= 19) {
-            MLogger.file(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
+            MLogger.i(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else {
@@ -160,7 +159,7 @@ class AlarmPingSender implements MqttPingSender {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    MLogger.file(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
+                    MLogger.i(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
                             + TimeUtils.getNowString());
                     //Release wakelock when it is done.
                     wakelock.release();
@@ -169,7 +168,7 @@ class AlarmPingSender implements MqttPingSender {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    MLogger.file(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
+                    MLogger.i(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
                             + TimeUtils.getNowString());
                     //Release wakelock when it is done.
                     wakelock.release();

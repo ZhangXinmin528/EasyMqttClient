@@ -8,13 +8,14 @@ import android.text.TextUtils;
 
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.MqttConnectionCallback;
+import com.coding.zxm.mqtt_master.client.listener.SimpleCOnnectionMqttCallback;
 import com.coding.zxm.mqtt_master.service.MqttAndroidClient;
 import com.coding.zxm.mqtt_master.util.MLogger;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -82,6 +83,7 @@ public final class MqttClientManager {
      * Build a new connection {@link MqttAndroidClient}
      *
      * @param listener {@link MqttActionListener}
+     * @param callback Use {@link MqttConnectionCallback} or{@link SimpleCOnnectionMqttCallback}
      */
     @RequiresPermission(Manifest.permission.INTERNET)
     public void connect(@NonNull MqttActionListener listener, MqttConnectionCallback callback) {
@@ -102,7 +104,17 @@ public final class MqttClientManager {
         }
 
         try {
-            mqttClient.setCallback(new MqttCallback() {
+            mqttClient.setCallback(new MqttCallbackExtended() {
+                @Override
+                public void connectComplete(boolean reconnect, String serverURI) {
+                    if (callback != null) {
+                        callback.connectComplete(reconnect, serverURI);
+                    }
+                    MLogger.file(MLogger.I, TAG, "The connection to the server is completed " +
+                            "successfully : [reconnect = " + reconnect + "]");
+
+                }
+
                 @Override
                 public void connectionLost(Throwable cause) {
                     if (callback != null) {
@@ -111,10 +123,10 @@ public final class MqttClientManager {
                     if (cause != null) {
                         if (cause instanceof MqttException) {
                             final MqttException exception = (MqttException) cause;
-                            MLogger.file(MLogger.E,TAG, "The connection to the server is lost : " + exception.toString());
+                            MLogger.file(MLogger.E, TAG, "The connection to the server is lost : " + exception.toString());
                         }
                     } else {
-                        MLogger.file(MLogger.E,TAG, "The connection to the server is lost : cause is null!");
+                        MLogger.file(MLogger.E, TAG, "The connection to the server is lost : cause is null!");
                     }
 
                 }

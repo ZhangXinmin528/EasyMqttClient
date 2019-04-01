@@ -12,6 +12,9 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
  * can be registered on both types of client:
  * {@link org.eclipse.paho.client.mqttv3.IMqttClient#setCallback(MqttCallback)}
  * and {@link org.eclipse.paho.client.mqttv3.IMqttAsyncClient#setCallback(MqttCallback)}
+ *
+ * @see MqttCallback
+ * @see org.eclipse.paho.client.mqttv3.MqttCallbackExtended
  */
 public interface MqttConnectionCallback {
 
@@ -65,4 +68,12 @@ public interface MqttConnectionCallback {
      * token as that returned when the message was published.
      */
     void deliveryComplete();
+
+    /**
+     * Called when the connection to the server is completed successfully.
+     *
+     * @param reconnect If true, the connection was the result of automatic reconnect.
+     * @param serverURI The server URI that the connection was made to.
+     */
+    void connectComplete(boolean reconnect, String serverURI);
 }

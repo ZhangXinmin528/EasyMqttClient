@@ -1295,6 +1295,7 @@ public class MqttAndroidClient extends BroadcastReceiver implements
         }
     }
 
+    //TODO:接收短线重连广播，并进行回调
     private void connectExtendedAction(Bundle data) {
         // This is called differently from a normal connect
 
