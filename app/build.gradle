@@ -14,23 +14,36 @@ android {
         multiDexEnabled false
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            //当前模式
-            buildConfigField 'boolean', 'IS_DEBUG', 'false'
-            //是否输出日志
-            buildConfigField("boolean", "LOG_ENABLE", "false")
-
+            storeFile file('F:/8-mqtt/EasyMqttClient/sign/keystore.jks')
+            storePassword '20190101'
+            keyAlias 'com.coding.zxm'
+            keyPassword '20190101'
         }
         debug {
-            //当前模式
-            buildConfigField 'boolean', 'IS_DEBUG', 'true'
-            //是否输出日志
-            buildConfigField("boolean", "LOG_ENABLE", "true")
+            keyAlias 'com.coding.zxm'
+            keyPassword '20190101'
+            storeFile file('F:/8-mqtt/EasyMqttClient/sign/keystore.jks')
+            storePassword '20190101'
+        }
+    }
 
+    buildTypes {
+        release {
+            //混淆
+            minifyEnabled true
+            //压缩优化
+            zipAlignEnabled true
+            //资源压缩
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            signingConfig signingConfigs.release
         }
     }
 
@@ -44,6 +57,5 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    //    implementation project(':easymqtt')
     implementation project(':mqtt_master')
 }
