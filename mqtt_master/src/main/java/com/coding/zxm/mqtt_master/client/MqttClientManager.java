@@ -75,7 +75,6 @@ public final class MqttClientManager {
         if (mqttConfig != null) {
             mqttClient = mqttConfig.getMqttAndroidClient();
             mqttOptions = mqttConfig.getConnectOptions();
-            mqttClient.setTraceEnabled(true);
         }
     }
 

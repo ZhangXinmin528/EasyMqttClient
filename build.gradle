@@ -41,12 +41,6 @@ ext {
     mqttServiceVersion = '1.1.1'
 
     //logger
-    loggerVersion = '2.2.0'
-
-    fastjsonVersion = '1.2.46'
-    eventbusVersion = '3.1.1'
-    crashreportVersion = '2.6.6.1'
-    nativecrashreportVersion = '3.3.1'
-    leakcanaryVersion = '1.5.4'
+    mqttMqsterVersion = '1.0.0'
 
 }

@@ -76,7 +76,8 @@ public final class MqttConfig {
          * {@link MqttConnectOptions #setUserName(String)}.
          *
          * @param userName The Username as a String
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setUserName(String)
          */
         public Builder setUserName(@NonNull String userName) {
             P.mUserName = userName;
@@ -88,23 +89,48 @@ public final class MqttConfig {
          * {@link MqttConnectOptions #setPassword(String)}.
          *
          * @param passWord the passWord
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setPassword(char[])
          */
         public Builder setPassWord(@NonNull String passWord) {
             P.mPassWord = passWord;
             return this;
         }
 
+        /**
+         * Set the specifies the name to identify to the server.
+         *
+         * @param clientId specifies the name by which this connection should be
+         *                 identified to the server
+         * @return {@link #Builder(Context)}
+         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
+         */
         public Builder setClientId(@NonNull String clientId) {
             P.mClientId = clientId;
             return this;
         }
 
+        /**
+         * Set the host to build server url to create {@link MqttAndroidClient}.
+         * <p> "tcp://" + P.mHost + ":" + P.mPort</p>
+         *
+         * @param host host value
+         * @return {@link #Builder(Context)}
+         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
+         */
         public Builder setHost(@NonNull String host) {
             P.mHost = host;
             return this;
         }
 
+        /**
+         * Set the port to build server url to create {@link MqttAndroidClient}.
+         * *<p> "tcp://" + P.mHost + ":" + P.mPort</p>
+         *
+         * @param port port value
+         * @return {@link #Builder(Context)}
+         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
+         */
         public Builder setPort(@NonNull String port) {
             P.mPort = port;
             return this;
@@ -115,7 +141,8 @@ public final class MqttConfig {
          * More information in {@link MqttConnectOptions #setCleanSession(boolean)}.
          *
          * @param cleanSession Set to True to enable cleanSession
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setCleanSession(boolean)
          */
         public Builder setCleanSession(boolean cleanSession) {
             P.mCleanSession = cleanSession;
@@ -128,7 +155,8 @@ public final class MqttConfig {
          * {@link MqttConnectOptions #setAutomaticReconnect(boolean)}.
          *
          * @param reconnect Set to True to enable reconnect
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setAutomaticReconnect(boolean)
          */
         public Builder setAutomaticReconnect(boolean reconnect) {
             P.mReconnect = reconnect;
@@ -140,7 +168,8 @@ public final class MqttConfig {
          * {@link MqttConnectOptions #setConnectionTimeout(int)}.
          *
          * @param timeout the timeout value, measured in seconds. It must be &gt;0;
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setConnectionTimeout(int)
          */
         public Builder setTimeout(@IntRange(from = 0) int timeout) {
             P.mTimeout = timeout;
@@ -152,10 +181,24 @@ public final class MqttConfig {
          * {@link MqttConnectOptions #setKeepAliveInterval(int)}.
          *
          * @param keepalive the interval, measured in seconds, must be &gt;= 0.
-         * @return MqttConfig
+         * @return {@link #Builder(Context)}
+         * @see MqttConnectOptions#setKeepAliveInterval(int)
          */
         public Builder setKeepalive(@IntRange(from = 0) int keepalive) {
             P.mKeepalive = keepalive;
+            return this;
+        }
+
+        /**
+         * turn tracing on and off
+         *
+         * @param traceEnabled set <code>true</code> to enable trace, otherwise, set
+         *                     <code>false</code> to disable trace
+         * @return {@link #Builder(Context)}
+         * @see com.coding.zxm.mqtt_master.service.MqttService#setTraceEnabled(boolean)
+         */
+        public Builder setTraceEnable(boolean traceEnabled) {
+            P.mTraceEnable = traceEnabled;
             return this;
         }
 
@@ -217,6 +260,10 @@ public final class MqttConfig {
                 MLogger.i(TAG, "Uri : " + P.mUri + "..clientId : " + P.mClientId);
             }
 
+            if (mMqttAndroidClient != null) {
+                mMqttAndroidClient.setTraceEnabled(P.mTraceEnable);
+            }
+
             return new MqttConfig(this);
         }
     }
@@ -244,6 +291,9 @@ public final class MqttConfig {
         //"keep alive" interval
         private int mKeepalive;
         private boolean mReconnect;
+
+        //trace enable
+        private boolean mTraceEnable;
 
         public ConfigParams(Context context) {
             this.mContext = context;

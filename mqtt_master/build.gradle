@@ -8,7 +8,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.0"
+        versionName rootProject.ext.mqttMqsterVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -45,9 +45,10 @@ dependencies {
 }
 
 // 打包源码jar
-task sourcesJar(type: Jar) {
+task makeJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    baseName = "mqtt-master"//文件名
+    version = mqttMqsterVersion//版本号
 }
 
 //生成Javadoc文档
