@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.coding.zxm.mqtt_master.client.MqttClientManager;
 import com.coding.zxm.mqtt_master.client.MqttConfig;
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
-import com.coding.zxm.mqtt_master.client.listener.SimpleCOnnectionMqttCallback;
+import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 
@@ -115,7 +115,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                                  Log.e(TAG, "Mqtt build connection failed！");
                              }
                          },
-                        new SimpleCOnnectionMqttCallback() {
+                        new SimpleConnectionMqttCallback() {
                             @Override
                             public void messageArrived(String topic, String message, int qos) throws Exception {
                                 super.messageArrived(topic, message, qos);

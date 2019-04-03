@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.MqttConnectionCallback;
-import com.coding.zxm.mqtt_master.client.listener.SimpleCOnnectionMqttCallback;
+import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.coding.zxm.mqtt_master.service.MqttAndroidClient;
 import com.coding.zxm.mqtt_master.util.MLogger;
 
@@ -82,7 +82,7 @@ public final class MqttClientManager {
      * Build a new connection {@link MqttAndroidClient}
      *
      * @param listener {@link MqttActionListener}
-     * @param callback Use {@link MqttConnectionCallback} or{@link SimpleCOnnectionMqttCallback}
+     * @param callback Use {@link MqttConnectionCallback} or{@link SimpleConnectionMqttCallback}
      */
     @RequiresPermission(Manifest.permission.INTERNET)
     public void connect(@NonNull MqttActionListener listener, MqttConnectionCallback callback) {
