@@ -26,12 +26,10 @@ public class MqttApplication extends Application {
 
         final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
                 .setClientId(clientId)
-//                .setHost("119.253.83.48")//生产
-//                .setPort("80")
-//                .setUserName("mqttad")
-//                .setPassWord("t@ikang@2019")
-                .setHost("119.254.229.167")//测试
-                .setPort("3080")
+                .setHost("111.231.71.179")
+                .setPort("1883")
+                .setUserName("mqttad")
+                .setPassWord("t@ikang@2019")
                 .setAutomaticReconnect(true)
                 .setCleanSession(true)
                 .setKeepalive(20)

@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:hint="@string/all_topic"
             android:inputType="text"
-            android:text="infrared/783379725"
+            android:text="imeetingroomTask2/040050378318341f040f"
             android:paddingStart="12dp"
             tools:ignore="RtlSymmetry" />
     </android.support.design.widget.TextInputLayout>

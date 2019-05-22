@@ -33,7 +33,7 @@ public class SubscribeFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void initParamsAndValues() {
-        mQos = 0;
+        mQos = 1;
     }
 
     @Override

@@ -125,6 +125,14 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                             public void connectionLost(Throwable cause) {
                                 super.connectionLost(cause);
                             }
+
+                            @Override
+                            public void connectComplete(boolean reconnect, String serverURI) {
+                                super.connectComplete(reconnect, serverURI);
+                                if (reconnect){
+                                    //重新订阅主题，否则收不到消息
+                                }
+                            }
                         });
     }
 
