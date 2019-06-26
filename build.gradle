@@ -6,6 +6,7 @@ buildscript {
         google()
         jcenter()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
         
@@ -43,4 +44,6 @@ ext {
     //logger
     mqttMqsterVersion = '1.0.0'
 
+    //util
+    utilVersion = '1.0.1'
 }

@@ -13,13 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.MainActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
 
         <!--建立连接-->
         <activity
@@ -33,10 +26,6 @@
         </activity>
 
         <!--订阅&发布-->
-        <activity
-            android:name=".activity.ConnectionDetialActivity"
-            android:label="@string/all_subscibe_publish"
-            android:screenOrientation="portrait" />
 
         <service android:name="com.coding.zxm.mqtt_master.service.MqttService" />
     </application>

@@ -16,26 +16,6 @@ public class MqttApplication extends Application {
         super.onCreate();
 
         initLogConfig();
-
-        initMqttClient();
-    }
-
-    private void initMqttClient() {
-
-        final String clientId = "mqtt" + System.currentTimeMillis();
-
-        final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
-                .setClientId(clientId)
-                .setHost("111.231.71.179")
-                .setPort("1883")
-                .setUserName("mqttad")
-                .setPassWord("t@ikang@2019")
-                .setAutomaticReconnect(true)
-                .setCleanSession(true)
-                .setKeepalive(20)
-                .create();
-
-        MqttClientManager.getInstance().init(config);
     }
 
     private void initLogConfig() {

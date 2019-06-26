@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">EasyMqttClient</string>
+
+    <string name="all_add_client">添加</string>
+    <string name="all_log_print">打印日志</string>
+
+    <string name="all_input_client_id">Client Id</string>
+    <string name="all_input_server">119.253.83.48</string>
+    <string name="all_input_port">80</string>
+    <string name="all_clear_session">Clear Session</string>
+    <string name="all_auto_subscribe">自动订阅</string>
+    <string name="all_build_connection">建立连接</string>
+    <string name="all_subscribe_publish">发布订阅</string>
+
+    <string name="all_topic">Topic</string>
+    <string name="all_message">消息</string>
+    <string name="all_qos">QOS</string>
+    <string name="all_subscribe">订阅</string>
+    <string name="all_publish">发布</string>
+    <string name="all_disconnect">断开连接</string>
+    <string name="all_retained">Retained</string>
+
+</resources>
