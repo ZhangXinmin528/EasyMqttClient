@@ -91,6 +91,28 @@
                 android:padding="6dp">
 
                 <CheckBox
+                    android:id="@+id/cb_auto_reconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_auto_reconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/all_auto_reconnect"
+                    android:textColor="@android:color/black" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <CheckBox
                     android:id="@+id/cb_auto_subscribe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -153,8 +175,8 @@
                     android:hint="@string/all_topic"
                     android:inputType="text"
                     android:paddingStart="12dp"
-                    android:text=""
-                    tools:ignore="RtlSymmetry" />
+                    android:text="infrared/793619615"
+                    tools:ignore="HardcodedText,RtlSymmetry" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -233,7 +255,8 @@
                     android:hint="@string/all_topic"
                     android:inputType="text"
                     android:paddingStart="12dp"
-                    tools:ignore="RtlSymmetry" />
+                    android:text="infrared/793619615"
+                    tools:ignore="HardcodedText,RtlSymmetry" />
 
             </android.support.design.widget.TextInputLayout>
 

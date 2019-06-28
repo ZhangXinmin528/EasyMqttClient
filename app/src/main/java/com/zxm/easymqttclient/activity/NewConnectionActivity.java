@@ -1,15 +1,17 @@
 package com.zxm.easymqttclient.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -18,18 +20,21 @@ import com.coding.zxm.mqtt_master.client.MqttClientManager;
 import com.coding.zxm.mqtt_master.client.MqttConfig;
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
+import com.coding.zxm.mqtt_master.util.MLogger;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
+import com.zxm.easymqttclient.polling.PollingSender;
 import com.zxm.easymqttclient.util.Constant;
-import com.zxm.utils.core.DialogUtil;
-import com.zxm.utils.core.PermissionChecker;
+import com.zxm.easymqttclient.util.DialogUtil;
+import com.zxm.easymqttclient.util.PermissionChecker;
+import com.zxm.easymqttclient.util.TimeUtil;
 
 /**
  * Created by ZhangXinmin on 2018/11/19.
  * Copyright (c) 2018 . All rights reserved.
  * 建立连接
  */
-public class NewConnectionActivity extends BaseActivity implements View.OnClickListener {
+public class NewConnectionActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_EXTERNAL = 1001;
 
@@ -37,8 +42,9 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     private TextInputEditText mClientIdEt;
     private TextInputEditText mServerEt;
     private TextInputEditText mPortEt;
-    private CheckBox mSessionCb;
-    private CheckBox mAutoSubSb;
+    private boolean isClearSession;
+    private boolean isAutoSubscribe;
+    private boolean isAutoReconnect;
 
     //订阅主题
     private TextInputEditText mSubscribeTopicEt;
@@ -48,8 +54,9 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     private TextInputEditText mPublishTopicEt;
     private TextInputEditText mMessageEt;
     private int mPubQos;
-    private CheckBox mRemainCb;
+    private boolean isRetained;
 
+    private PollingSender mPollingSender;
 
     @Override
     protected Object setLayout() {
@@ -59,6 +66,10 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void initParamsAndViews() {
         checkStrogePermission();
+
+        mPollingSender =
+                new PollingSender(mContext, PollingSender.INTERVAL_FIVE_MINUTES, new PollingReceiver());
+
     }
 
     /**
@@ -66,7 +77,9 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
      */
     private void checkStrogePermission() {
         if (!PermissionChecker.checkPersmission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL);
+            PermissionChecker.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_EXTERNAL);
         }
     }
 
@@ -75,9 +88,18 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
         //0.连接
         mClientIdEt = findViewById(R.id.et_client_id);
         mServerEt = findViewById(R.id.et_server);
+
         mPortEt = findViewById(R.id.et_port);
-        mSessionCb = findViewById(R.id.cb_session);
-        mAutoSubSb = findViewById(R.id.cb_auto_subscribe);
+
+        final CheckBox sessionCb = findViewById(R.id.cb_session);
+        sessionCb.setOnCheckedChangeListener(this);
+        final CheckBox autoSubSb = findViewById(R.id.cb_auto_subscribe);
+        autoSubSb.setOnCheckedChangeListener(this);
+        isAutoSubscribe = true;
+        final CheckBox autoReconnect = findViewById(R.id.cb_auto_reconnect);
+        autoReconnect.setOnCheckedChangeListener(this);
+        isAutoReconnect = true;
+
         //建立连接
         findViewById(R.id.btn_connect).setOnClickListener(this);
         //断开连接
@@ -94,7 +116,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
         //订阅
         findViewById(R.id.btn_subscribe).setOnClickListener(this);
 
-        //发布
+        //2.发布
         mPublishTopicEt = findViewById(R.id.et_publish_topic);
         mMessageEt = findViewById(R.id.et_publish_message);
         RadioGroup rg_publish = findViewById(R.id.rg_publish);
@@ -104,8 +126,18 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
             mPubQos = Integer.parseInt(target);
         });
 
-        mRemainCb = findViewById(R.id.cb_retained);
+        final CheckBox remainCb = findViewById(R.id.cb_retained);
+        remainCb.setOnCheckedChangeListener(this);
         findViewById(R.id.btn_publish).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        if (mPollingSender != null &&
+                !mPollingSender.isPollingStarted()) {
+            mPollingSender.start();
+        }
+        super.onStart();
     }
 
     @Override
@@ -128,28 +160,34 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
 
     //创建连接
     private void buildConnection() {
+        final String inputValue = mClientIdEt.getEditableText().toString().trim();
+        final String clientId = TextUtils.isEmpty(inputValue) ?
+                "EasyMqttClient_" + System.currentTimeMillis() :
+                inputValue + "_" + System.currentTimeMillis();
 
-        final String clientId = mClientIdEt.getEditableText().toString().trim() + System.currentTimeMillis();
+        mClientIdEt.setText(clientId);
+
         String host = mServerEt.getEditableText().toString().trim();
         String port = mPortEt.getEditableText().toString().trim();
-        final boolean clearSession = mSessionCb.isChecked();
 
         if (TextUtils.isEmpty(host)) {
             host = Constant.MQTT_HOST;
+            mServerEt.setText(Constant.MQTT_HOST);
         }
         if (TextUtils.isEmpty(port)) {
             port = Constant.MQTT_PORT;
+            mPortEt.setText(Constant.MQTT_PORT);
         }
 
         final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
                 .setClientId(clientId)
                 .setHost(host)
                 .setPort(port)
-                .setAutomaticReconnect(true)
-                .setCleanSession(clearSession)
+                .setAutomaticReconnect(isAutoReconnect)
+                .setCleanSession(isClearSession)
                 .setKeepalive(20)
-                .setUserName("")
-                .setPassWord("")
+                .setUserName(Constant.MQTT_NAME)
+                .setPassWord(Constant.MQTT_PWD)
                 .create();
 
         MqttClientManager.getInstance().init(config);
@@ -160,32 +198,41 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                              @Override
                              public void onSuccess() {
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
-                                 Log.i(TAG, "Mqtt build connection success！");
+                                 MLogger.i(TAG, "Mqtt build connection success！");
+                                 subscribeTopic();
                              }
 
                              @Override
                              public void onFailure(Throwable exception) {
                                  Toast.makeText(mContext, "Mqtt建立连接失败！", Toast.LENGTH_SHORT).show();
-                                 Log.e(TAG, "Mqtt build connection failed！");
+                                 MLogger.e(TAG, "Mqtt build connection failed！");
                              }
                          },
                         new SimpleConnectionMqttCallback() {
                             @Override
                             public void messageArrived(String topic, String message, int qos) throws Exception {
                                 super.messageArrived(topic, message, qos);
+                                MLogger.i(TAG, "messageArrived~");
+                                MLogger.json(message);
                             }
 
                             @Override
                             public void connectionLost(Throwable cause) {
                                 super.connectionLost(cause);
+                                if (cause == null) {
+                                    MLogger.e(TAG, "connectionLost..cause is null~");
+                                } else {
+                                    MLogger.e(TAG, "connectionLost..cause : " + cause.toString());
+                                }
                             }
 
                             @Override
                             public void connectComplete(boolean reconnect, String serverURI) {
                                 super.connectComplete(reconnect, serverURI);
-                                if (reconnect) {
+                                MLogger.i(TAG, "connectComplete..reconnect:" + reconnect);
+                                if (isAutoSubscribe && !reconnect) {
                                     //重新订阅主题，否则收不到消息
-
+                                    subscribeTopic();
                                 }
                             }
                         });
@@ -203,11 +250,13 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess() {
                         Toast.makeText(mContext, "订阅成功", Toast.LENGTH_SHORT).show();
+                        MLogger.i(TAG, "subscribeTopic..topic : [" + topic + "]..success!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
+                        MLogger.e(TAG, "subscribeTopic..topic : [" + topic + "]..failure!");
                     }
                 });
     }
@@ -215,7 +264,6 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     private void publishMessage() {
         final String topic = mPublishTopicEt.getEditableText().toString().trim();
         final String msg = mMessageEt.getEditableText().toString().trim();
-        final boolean retained = mRemainCb.isChecked();
 
         if (TextUtils.isEmpty(topic)) {
             Toast.makeText(mContext, "请输入发布Topic!", Toast.LENGTH_SHORT).show();
@@ -228,15 +276,17 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
         }
 
         MqttClientManager.getInstance()
-                .publish(topic, msg, mPubQos, retained, new MqttActionListener() {
+                .publish(topic, msg, mPubQos, isRetained, new MqttActionListener() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
+                        MLogger.i(TAG, "publishMessage..message [: " + msg + "]..success!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "发布失败", Toast.LENGTH_SHORT).show();
+                        MLogger.e(TAG, "publishMessage..message : [" + msg + "]..failure!");
                     }
                 });
 
@@ -259,16 +309,57 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     }
 
     private void disconnect() {
+
         MqttClientManager.getInstance().disconnect(new MqttActionListener() {
             @Override
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
+                MLogger.i(TAG, "disconnect..success~");
             }
 
             @Override
             public void onFailure(Throwable exception) {
                 Toast.makeText(mContext, "断开连接失败", Toast.LENGTH_SHORT).show();
+                MLogger.e(TAG, "disconnect..cause : " + exception.toString());
             }
         });
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_session:
+                isClearSession = isChecked;
+                break;
+            case R.id.cb_auto_reconnect:
+                isAutoReconnect = isChecked;
+                break;
+            case R.id.cb_auto_subscribe:
+                isAutoSubscribe = isChecked;
+                break;
+            case R.id.cb_retained:
+                isRetained = isChecked;
+                break;
+        }
+    }
+
+    private final class PollingReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                final String action = intent.getAction();
+                MLogger.file(TAG, "PollingReceiver..onReceive : "
+                        + TimeUtil.getNowTimeStamp(PollingSender.DATE_FORMAT));
+
+                if (!TextUtils.isEmpty(action)) {
+                    //进行下次定时任务
+                    mPollingSender.schedule();
+                    if (!MqttClientManager.getInstance().isConnected()) {
+                        buildConnection();
+                    }
+                }
+            }
+        }
     }
 }

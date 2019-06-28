@@ -43,10 +43,16 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+            //当前模式
+            buildConfigField 'boolean', 'IS_DEBUG', 'false'
+
             signingConfig signingConfigs.release
         }
 
         debug {
+            //当前模式
+            buildConfigField 'boolean', 'IS_DEBUG', 'false'
+
             signingConfig signingConfigs.release
         }
     }
@@ -63,5 +69,4 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation project(':mqtt_master')
 
-    implementation "com.zxm.utils:lib.coreutils:$rootProject.utilVersion"
 }

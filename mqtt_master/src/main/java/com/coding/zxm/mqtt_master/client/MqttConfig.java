@@ -257,7 +257,12 @@ public final class MqttConfig {
             if (mMqttAndroidClient == null && !TextUtils.isEmpty(P.mUri) &&
                     !TextUtils.isEmpty(P.mClientId)) {
                 mMqttAndroidClient = new MqttAndroidClient(P.mContext, P.mUri, P.mClientId);
-                MLogger.i(TAG, "Uri : " + P.mUri + "..clientId : " + P.mClientId);
+                MLogger.d(TAG, "Uri : " + P.mUri,
+                        "ClientId : " + P.mClientId,
+                        "CleanSession : " + P.mCleanSession,
+                        "Keepalive : " + P.mKeepalive,
+                        "Reconnect : " + P.mReconnect,
+                        "Timeout : " + P.mTimeout);
             }
 
             if (mMqttAndroidClient != null) {
