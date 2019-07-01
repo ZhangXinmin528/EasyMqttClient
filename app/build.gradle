@@ -61,12 +61,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    implementation project(':mqtt_master')
+    //引用module
+//    implementation project(':mqtt_master')
 
+    //使用AAR
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
+    implementation(name: 'mqtt_service_1.0.0_release', ext: 'aar')
 }

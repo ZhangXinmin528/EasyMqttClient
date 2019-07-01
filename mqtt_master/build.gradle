@@ -14,17 +14,9 @@ android {
 
     }
 
-    lintOptions {
-        // if set to true (default), stops the build if errors are found.
-        abortOnError false
-        // if true, only report errors.
-        ignoreWarnings true
-    }
-
     buildTypes {
         release {
-            minifyEnabled true
-            zipAlignEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,6 +24,13 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    libraryVariants.all {
+        variant ->
+            variant.outputs.all {
+                outputFileName = "mqtt_service_${defaultConfig.versionName}_${buildType.name}.aar"
+            }
     }
 
 }
@@ -42,42 +41,4 @@ dependencies {
 
     //mqtt client
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
-}
-
-// 打包源码jar
-task makeJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    baseName = "mqtt-master"//文件名
-    version = mqttMqsterVersion//版本号
-}
-
-//生成Javadoc文档
-task javadoc(type: Javadoc) {
-    failOnError false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-}
-
-//文档打包成jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-//拷贝javadoc文件
-task copyDoc(type: Copy) {
-    from "${buildDir}/docs/"
-    into "docs"
-}
-
-javadoc {
-    options {
-        //中文注释，格式设置为UTF-8
-        encoding "UTF-8"
-        charSet 'UTF-8'
-        author true
-        version true
-        links "http://docs.oracle.com/javase/7/docs/api"
-    }
 }

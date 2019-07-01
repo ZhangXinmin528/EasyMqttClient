@@ -54,6 +54,9 @@ public final class MqttConfig {
         return null;
     }
 
+    public String getConfigParams() {
+        return builder.P.toString();
+    }
 
     public static class Builder {
         private final ConfigParams P;
@@ -77,7 +80,6 @@ public final class MqttConfig {
          *
          * @param userName The Username as a String
          * @return {@link #Builder(Context)}
-         * @see MqttConnectOptions#setUserName(String)
          */
         public Builder setUserName(@NonNull String userName) {
             P.mUserName = userName;
@@ -103,7 +105,6 @@ public final class MqttConfig {
          * @param clientId specifies the name by which this connection should be
          *                 identified to the server
          * @return {@link #Builder(Context)}
-         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
          */
         public Builder setClientId(@NonNull String clientId) {
             P.mClientId = clientId;
@@ -116,7 +117,6 @@ public final class MqttConfig {
          *
          * @param host host value
          * @return {@link #Builder(Context)}
-         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
          */
         public Builder setHost(@NonNull String host) {
             P.mHost = host;
@@ -129,7 +129,6 @@ public final class MqttConfig {
          *
          * @param port port value
          * @return {@link #Builder(Context)}
-         * @see MqttAndroidClient#MqttAndroidClient(Context, String, String)
          */
         public Builder setPort(@NonNull String port) {
             P.mPort = port;
@@ -273,7 +272,6 @@ public final class MqttConfig {
         }
     }
 
-
     /**
      * mqtt config params
      */
@@ -304,6 +302,23 @@ public final class MqttConfig {
             this.mContext = context;
             mTimeout = defaultTimeOut;
             mKeepalive = defaultKeepAlive;
+        }
+
+        @Override
+        public String toString() {
+            return "ConfigParams{" +
+                    "mClientId='" + mClientId + '\'' +
+                    ", mHost='" + mHost + '\'' +
+                    ", mPort='" + mPort + '\'' +
+                    ", mUri='" + mUri + '\'' +
+                    ", mUserName='" + mUserName + '\'' +
+                    ", mPassWord='" + mPassWord + '\'' +
+                    ", mCleanSession=" + mCleanSession +
+                    ", mTimeout=" + mTimeout +
+                    ", mKeepalive=" + mKeepalive +
+                    ", mReconnect=" + mReconnect +
+                    ", mTraceEnable=" + mTraceEnable +
+                    '}';
         }
     }
 }

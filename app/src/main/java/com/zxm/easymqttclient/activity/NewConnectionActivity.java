@@ -34,7 +34,8 @@ import com.zxm.easymqttclient.util.TimeUtil;
  * Copyright (c) 2018 . All rights reserved.
  * 建立连接
  */
-public class NewConnectionActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class NewConnectionActivity extends BaseActivity implements
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_EXTERNAL = 1001;
 
@@ -57,6 +58,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     private boolean isRetained;
 
     private PollingSender mPollingSender;
+    private boolean isAutoDisconnect;
 
     @Override
     protected Object setLayout() {
@@ -98,7 +100,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
         isAutoSubscribe = true;
         final CheckBox autoReconnect = findViewById(R.id.cb_auto_reconnect);
         autoReconnect.setOnCheckedChangeListener(this);
-        isAutoReconnect = true;
+//        isAutoReconnect = false;
 
         //建立连接
         findViewById(R.id.btn_connect).setOnClickListener(this);
@@ -161,9 +163,13 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
     //创建连接
     private void buildConnection() {
         final String inputValue = mClientIdEt.getEditableText().toString().trim();
-        final String clientId = TextUtils.isEmpty(inputValue) ?
+        final String tempClientId = TextUtils.isEmpty(inputValue) ?
+                "EasyMqttClient" :
+                inputValue;
+
+        final String clientId = tempClientId.contains("_") ?
                 "EasyMqttClient_" + System.currentTimeMillis() :
-                inputValue + "_" + System.currentTimeMillis();
+                tempClientId + "_" + System.currentTimeMillis();
 
         mClientIdEt.setText(clientId);
 
@@ -199,7 +205,11 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                              public void onSuccess() {
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
                                  MLogger.i(TAG, "Mqtt build connection success！");
-                                 subscribeTopic();
+
+                                 isAutoDisconnect = false;
+
+                                 MLogger.file(TAG, "Mqtt connection params : \n" +
+                                         MqttClientManager.getInstance().getMqttConfig().getConfigParams());
                              }
 
                              @Override
@@ -315,6 +325,7 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
                 MLogger.i(TAG, "disconnect..success~");
+                isAutoDisconnect = true;
             }
 
             @Override
@@ -355,7 +366,9 @@ public class NewConnectionActivity extends BaseActivity implements View.OnClickL
                 if (!TextUtils.isEmpty(action)) {
                     //进行下次定时任务
                     mPollingSender.schedule();
-                    if (!MqttClientManager.getInstance().isConnected()) {
+                    if (!MqttClientManager.getInstance().isConnected()
+                            && !isAutoDisconnect) {
+
                         buildConnection();
                     }
                 }

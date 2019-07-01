@@ -15,9 +15,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--建立连接-->
-        <activity
-            android:name=".activity.NewConnectionActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".activity.NewConnectionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
