@@ -20,7 +20,8 @@ import com.coding.zxm.mqtt_master.client.MqttClientManager;
 import com.coding.zxm.mqtt_master.client.MqttConfig;
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.polling.PollingSender;
@@ -204,42 +205,42 @@ public class NewConnectionActivity extends BaseActivity implements
                              @Override
                              public void onSuccess() {
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
-                                 MLogger.i(TAG, "Mqtt build connection success！");
+                                 MqttDebuger.i(TAG, "Mqtt build connection success！");
 
                                  isAutoDisconnect = false;
 
-                                 MLogger.file(TAG, "Mqtt connection params : \n" +
+                                 MqttDebuger.file(TAG, "Mqtt connection params : \n" +
                                          MqttClientManager.getInstance().getMqttConfig().getConfigParams());
                              }
 
                              @Override
                              public void onFailure(Throwable exception) {
                                  Toast.makeText(mContext, "Mqtt建立连接失败！", Toast.LENGTH_SHORT).show();
-                                 MLogger.e(TAG, "Mqtt build connection failed！");
+                                 MqttDebuger.e(TAG, "Mqtt build connection failed！");
                              }
                          },
                         new SimpleConnectionMqttCallback() {
                             @Override
                             public void messageArrived(String topic, String message, int qos) throws Exception {
                                 super.messageArrived(topic, message, qos);
-                                MLogger.i(TAG, "messageArrived~");
-                                MLogger.json(message);
+                                MqttDebuger.i(TAG, "messageArrived~");
+                                MqttDebuger.json(message);
                             }
 
                             @Override
                             public void connectionLost(Throwable cause) {
                                 super.connectionLost(cause);
                                 if (cause == null) {
-                                    MLogger.e(TAG, "connectionLost..cause is null~");
+                                    MqttDebuger.e(TAG, "connectionLost..cause is null~");
                                 } else {
-                                    MLogger.e(TAG, "connectionLost..cause : " + cause.toString());
+                                    MqttDebuger.e(TAG, "connectionLost..cause : " + cause.toString());
                                 }
                             }
 
                             @Override
                             public void connectComplete(boolean reconnect, String serverURI) {
                                 super.connectComplete(reconnect, serverURI);
-                                MLogger.i(TAG, "connectComplete..reconnect:" + reconnect);
+                                MqttDebuger.i(TAG, "connectComplete..reconnect:" + reconnect);
                                 if (isAutoSubscribe && !reconnect) {
                                     //重新订阅主题，否则收不到消息
                                     subscribeTopic();
@@ -260,13 +261,13 @@ public class NewConnectionActivity extends BaseActivity implements
                     @Override
                     public void onSuccess() {
                         Toast.makeText(mContext, "订阅成功", Toast.LENGTH_SHORT).show();
-                        MLogger.i(TAG, "subscribeTopic..topic : [" + topic + "]..success!");
+                        MqttDebuger.i(TAG, "subscribeTopic..topic : [" + topic + "]..success!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
-                        MLogger.e(TAG, "subscribeTopic..topic : [" + topic + "]..failure!");
+                        MqttDebuger.e(TAG, "subscribeTopic..topic : [" + topic + "]..failure!");
                     }
                 });
     }
@@ -290,13 +291,13 @@ public class NewConnectionActivity extends BaseActivity implements
                     @Override
                     public void onSuccess() {
                         Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
-                        MLogger.i(TAG, "publishMessage..message [: " + msg + "]..success!");
+                        MqttDebuger.i(TAG, "publishMessage..message [: " + msg + "]..success!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "发布失败", Toast.LENGTH_SHORT).show();
-                        MLogger.e(TAG, "publishMessage..message : [" + msg + "]..failure!");
+                        MqttDebuger.e(TAG, "publishMessage..message : [" + msg + "]..failure!");
                     }
                 });
 
@@ -324,14 +325,14 @@ public class NewConnectionActivity extends BaseActivity implements
             @Override
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
-                MLogger.i(TAG, "disconnect..success~");
+                MqttDebuger.i(TAG, "disconnect..success~");
                 isAutoDisconnect = true;
             }
 
             @Override
             public void onFailure(Throwable exception) {
                 Toast.makeText(mContext, "断开连接失败", Toast.LENGTH_SHORT).show();
-                MLogger.e(TAG, "disconnect..cause : " + exception.toString());
+                MqttDebuger.e(TAG, "disconnect..cause : " + exception.toString());
             }
         });
     }
@@ -360,7 +361,7 @@ public class NewConnectionActivity extends BaseActivity implements
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 final String action = intent.getAction();
-                MLogger.file(TAG, "PollingReceiver..onReceive : "
+                MqttDebuger.file(TAG, "PollingReceiver..onReceive : "
                         + TimeUtil.getNowTimeStamp(PollingSender.DATE_FORMAT));
 
                 if (!TextUtils.isEmpty(action)) {

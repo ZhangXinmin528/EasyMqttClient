@@ -42,7 +42,7 @@ ext {
     mqttServiceVersion = '1.1.1'
 
     //logger
-    mqttMqsterVersion = '1.0.0'
+    mqttMqsterVersion = '1.0.2'
 
     //util
     utilVersion = '1.0.1'

@@ -24,7 +24,7 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.coding.zxm.mqtt_master.util.TimeUtils;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -72,7 +72,7 @@ class AlarmPingSender implements MqttPingSender {
         String action = MqttServiceConstants.PING_SENDER
                 + comms.getClient().getClientId();
         service.registerReceiver(alarmReceiver, new IntentFilter(action));
-        MLogger.file(TAG, "Register alarmreceiver to MqttService : " + action);
+        MqttDebuger.file(TAG, "Register alarmreceiver to MqttService : " + action);
 
         pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
                 action), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -84,7 +84,7 @@ class AlarmPingSender implements MqttPingSender {
     @Override
     public void stop() {
 
-        MLogger.file(TAG, "Unregister alarmreceiver to MqttService clientId : "
+        MqttDebuger.file(TAG, "Unregister alarmreceiver to MqttService clientId : "
                 + comms.getClient().getClientId());
 
         if (hasStarted) {
@@ -108,7 +108,7 @@ class AlarmPingSender implements MqttPingSender {
         long nextAlarmInMilliseconds = System.currentTimeMillis()
                 + delayInMilliseconds;
 
-        MLogger.file(TAG, "Schedule next alarm at : " + TimeUtils.getNowString());
+        MqttDebuger.file(TAG, "Schedule next alarm at : " + TimeUtils.getNowString());
 
         AlarmManager alarmManager = (AlarmManager) service
                 .getSystemService(Service.ALARM_SERVICE);
@@ -116,11 +116,11 @@ class AlarmPingSender implements MqttPingSender {
         if (Build.VERSION.SDK_INT >= 23) {
             // In SDK 23 and above, dosing will prevent setExact, setExactAndAllowWhileIdle will force
             // the device to run this task whilst dosing.
-            MLogger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
+            MqttDebuger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayInMilliseconds);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else if (Build.VERSION.SDK_INT >= 19) {
-            MLogger.i(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
+            MqttDebuger.i(TAG, "Alarm scheule using setExact, delay : " + delayInMilliseconds);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlarmInMilliseconds,
                     pendingIntent);
         } else {
@@ -145,7 +145,7 @@ class AlarmPingSender implements MqttPingSender {
             // This guarantees that the phone will not sleep until you have
             // finished handling the broadcast.", but this class still get
             // a wake lock to wait for ping finished.
-            MLogger.file(TAG, "Sending Ping at : " + TimeUtils.getNowString());
+            MqttDebuger.file(TAG, "Sending Ping at : " + TimeUtils.getNowString());
 
             PowerManager pm = (PowerManager) service
                     .getSystemService(Service.POWER_SERVICE);
@@ -159,7 +159,7 @@ class AlarmPingSender implements MqttPingSender {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    MLogger.i(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
+                    MqttDebuger.i(TAG, "Success. Release lock(" + wakeLockTag + ") at :"
                             + TimeUtils.getNowString());
                     //Release wakelock when it is done.
                     wakelock.release();
@@ -168,7 +168,7 @@ class AlarmPingSender implements MqttPingSender {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    MLogger.i(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
+                    MqttDebuger.i(TAG, "Failure. Release lock(" + wakeLockTag + ") at : "
                             + TimeUtils.getNowString());
                     //Release wakelock when it is done.
                     wakelock.release();

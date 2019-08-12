@@ -19,7 +19,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -958,7 +958,7 @@ class MqttConnection implements MqttCallbackExtended {
 
         if (connectOptions.isAutomaticReconnect()) {
             //The Automatic reconnect functionality is enabled here
-            MLogger.file(TAG, "Requesting Automatic reconnect using New Java AC");
+            MqttDebuger.file(TAG, "Requesting Automatic reconnect using New Java AC");
             final Bundle resultBundle = new Bundle();
             resultBundle.putString(
                     MqttServiceConstants.CALLBACK_ACTIVITY_TOKEN,
@@ -970,7 +970,7 @@ class MqttConnection implements MqttCallbackExtended {
             try {
                 myClient.reconnect();
             } catch (MqttException ex) {
-                MLogger.e(TAG, "Exception occurred attempting to reconnect: " + ex.getMessage());
+                MqttDebuger.e(TAG, "Exception occurred attempting to reconnect: " + ex.getMessage());
                 setConnectingState(false);
                 handleException(resultBundle, ex);
             }

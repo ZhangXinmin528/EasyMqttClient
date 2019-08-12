@@ -46,7 +46,7 @@ import javax.xml.transform.stream.StreamSource;
  * Copyright (c) 2018 . All rights reserved.
  * android log utils
  */
-public final class MLogger {
+public final class MqttDebuger {
 
     //log level
     public static final int V = Log.VERBOSE;
@@ -95,8 +95,43 @@ public final class MLogger {
 
     private static ExecutorService sExecutor;
 
-    private MLogger() {
+    private MqttDebuger() {
         throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * 是否开启调试日志；
+     *
+     * @param applicationContext
+     * @param enable
+     */
+    public static void setDebugerEnable(@NonNull Context applicationContext,
+                                        boolean enable) {
+        final MqttDebuger.LogConfig logConfig = new MqttDebuger
+                .LogConfig(applicationContext)
+                .setLogSwitch(enable);
+
+        MqttDebuger.resetLogConfig(logConfig);
+        MqttDebuger.d(logConfig.toString());
+    }
+
+    /**
+     * 添加日志缓存
+     *
+     * @param applicationContext
+     * @param enable
+     */
+    public static void setFileEnable(@NonNull Context applicationContext,
+                                     boolean enable) {
+        LogConfig config = getLogConfig();
+        if (config == null) {
+            config = new MqttDebuger.LogConfig(applicationContext);
+        }
+
+        config.setLogSwitch(enable).setLog2FileSwitch(enable);
+
+        MqttDebuger.resetLogConfig(config);
+        MqttDebuger.d(config.toString());
     }
 
     /**
@@ -654,7 +689,7 @@ public final class MLogger {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Log.e("MLogger", "log to " + filePath + " failed!");
+        Log.e("MqttDebuger", "log to " + filePath + " failed!");
     }
 
     @IntDef({V, D, I, W, E, A})

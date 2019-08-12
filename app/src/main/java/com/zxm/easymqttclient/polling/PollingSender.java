@@ -10,7 +10,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.TimeUtil;
 
@@ -66,7 +66,7 @@ public final class PollingSender {
 
     public void start() {
         if (receiver != null) {
-            MLogger.i(TAG, "start()~");
+            MqttDebuger.i(TAG, "start()~");
             context.registerReceiver(receiver, new IntentFilter(action));
 
             pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(action),
@@ -79,7 +79,7 @@ public final class PollingSender {
     }
 
     public void stop() {
-        MLogger.i(TAG, "stop()~");
+        MqttDebuger.i(TAG, "stop()~");
 
         if (isStarted) {
             if (pendingIntent != null) {
@@ -105,7 +105,7 @@ public final class PollingSender {
     public void schedule(long delayMillseconds) {
         final long nextAlarmMillseconds = System.currentTimeMillis() + delayMillseconds;
 
-        MLogger.i(TAG, "schedule next alerm at : " + TimeUtil.getNowTimeStamp(DATE_FORMAT));
+        MqttDebuger.i(TAG, "schedule next alerm at : " + TimeUtil.getNowTimeStamp(DATE_FORMAT));
 
         AlarmManager alarmManager = (AlarmManager) context
                 .getSystemService(Service.ALARM_SERVICE);
@@ -114,16 +114,16 @@ public final class PollingSender {
             if (Build.VERSION.SDK_INT >= 23) {
                 // In SDK 23 and above, dosing will prevent setExact, setExactAndAllowWhileIdle will force
                 // the device to run this task whilst dosing.
-                MLogger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayMillseconds);
+                MqttDebuger.i(TAG, "Alarm scheule using setExactAndAllowWhileIdle, next : " + delayMillseconds);
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAlarmMillseconds,
                         pendingIntent);
             } else if (Build.VERSION.SDK_INT >= 19) {
-                MLogger.i(TAG, "Alarm scheule using setExact, next : "
+                MqttDebuger.i(TAG, "Alarm scheule using setExact, next : "
                         + nextAlarmMillseconds);
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, delayMillseconds,
                         pendingIntent);
             } else {
-                MLogger.i(TAG, "Alarm scheule using set, next : "
+                MqttDebuger.i(TAG, "Alarm scheule using set, next : "
                         + nextAlarmMillseconds);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, delayMillseconds,
                         pendingIntent);

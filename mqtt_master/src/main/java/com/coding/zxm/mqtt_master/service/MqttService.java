@@ -31,7 +31,7 @@ import android.os.PowerManager.WakeLock;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.coding.zxm.mqtt_master.util.TimeUtils;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -326,7 +326,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     void reconnect() {
         traceDebug(TAG, "Reconnect to server, client size=" + connections.size());
-        MLogger.e(TAG, "reconnect()" + TimeUtils.getNowString());
+        MqttDebuger.e(TAG, "reconnect()" + TimeUtils.getNowString());
         for (MqttConnection client : connections.values()) {
             traceDebug("Reconnect Client:",
                     client.getClientId() + '/' + client.getServerURI());
@@ -560,7 +560,7 @@ public class MqttService extends Service implements MqttTraceHandler {
     @Override
     public void onCreate() {
         super.onCreate();
-        MLogger.file(TAG, "onCreate() : " + TimeUtils.getNowString());
+        MqttDebuger.file(TAG, "onCreate() : " + TimeUtils.getNowString());
 
         // create a binder that will let the Activity UI send
         // commands to the Service
@@ -578,7 +578,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public void onDestroy() {
-        MLogger.file(TAG, "onDestroy() : " + TimeUtils.getNowString());
+        MqttDebuger.file(TAG, "onDestroy() : " + TimeUtils.getNowString());
         // disconnect immediately
         for (MqttConnection client : connections.values()) {
             client.disconnect(null, null);
@@ -603,7 +603,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        MLogger.file(TAG, "onBind() : " + TimeUtils.getNowString());
+        MqttDebuger.file(TAG, "onBind() : " + TimeUtils.getNowString());
         // What we pass back to the Activity on binding -
         // a reference to ourself, and the activityToken
         // we were given when started
@@ -618,7 +618,7 @@ public class MqttService extends Service implements MqttTraceHandler {
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, final int startId) {
-        MLogger.file(TAG, "onStartCommand() : " + TimeUtils.getNowString());
+        MqttDebuger.file(TAG, "onStartCommand() : " + TimeUtils.getNowString());
         // run till explicitly stopped, restart when
         // process restarted
         registerBroadcastReceivers();
@@ -686,7 +686,7 @@ public class MqttService extends Service implements MqttTraceHandler {
             callbackToActivity(traceCallbackId, Status.ERROR, dataBundle);
 
             //TODO:追踪回调行为
-            MLogger.i(TAG, "traceCallback() .. severity : " + severity + "..tag : " + tag +
+            MqttDebuger.i(TAG, "traceCallback() .. severity : " + severity + "..tag : " + tag +
                     "..message : " + message);
         }
     }
@@ -817,7 +817,7 @@ public class MqttService extends Service implements MqttTraceHandler {
         @SuppressLint({"Wakelock", "InvalidWakeLockTag"})
         public void onReceive(Context context, Intent intent) {
             traceDebug(TAG, "Internal network status receive.");
-            MLogger.i(TAG, "NetworkConnectionIntentReceiver..Internal network status receive."
+            MqttDebuger.i(TAG, "NetworkConnectionIntentReceiver..Internal network status receive."
                     + TimeUtils.getNowString());
 
             // we protect against the phone switching off
@@ -830,7 +830,7 @@ public class MqttService extends Service implements MqttTraceHandler {
                 wl.acquire();
             }
             traceDebug(TAG, "Reconnect for Network recovery.");
-            MLogger.file(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
+            MqttDebuger.file(TAG, "Reconnect for Network recovery : " + isOnline() + ".."
                     + TimeUtils.getNowString());
             if (isOnline()) {
                 traceDebug(TAG, "Online,Mqtt will reconnect once again.");
@@ -863,7 +863,7 @@ public class MqttService extends Service implements MqttTraceHandler {
                     backgroundDataEnabled = true;
                     // we have the Internet connection - have another try at
                     // connecting
-                    MLogger.file(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
+                    MqttDebuger.file(TAG, "BackgroundDataPreferenceReceiver..Reconnect since BroadcastReceiver."
                             + TimeUtils.getNowString());
 
                     reconnect();

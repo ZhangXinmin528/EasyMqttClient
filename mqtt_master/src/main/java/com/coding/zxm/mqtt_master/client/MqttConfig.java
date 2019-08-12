@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.coding.zxm.mqtt_master.service.MqttAndroidClient;
-import com.coding.zxm.mqtt_master.util.MLogger;
+import com.coding.zxm.mqtt_master.util.MqttDebuger;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
@@ -256,7 +256,7 @@ public final class MqttConfig {
             if (mMqttAndroidClient == null && !TextUtils.isEmpty(P.mUri) &&
                     !TextUtils.isEmpty(P.mClientId)) {
                 mMqttAndroidClient = new MqttAndroidClient(P.mContext, P.mUri, P.mClientId);
-                MLogger.d(TAG, "Uri : " + P.mUri,
+                MqttDebuger.d(TAG, "Uri : " + P.mUri,
                         "ClientId : " + P.mClientId,
                         "CleanSession : " + P.mCleanSession,
                         "Keepalive : " + P.mKeepalive,
