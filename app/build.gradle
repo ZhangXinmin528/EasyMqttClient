@@ -78,5 +78,5 @@ dependencies {
 
     //使用AAR
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
-    implementation(name: 'mqtt_service_1.0.1_release', ext: 'aar')
+    implementation(name: 'mqtt_service_1.0.2_release', ext: 'aar')
 }
