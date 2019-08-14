@@ -747,9 +747,9 @@ public final class MqttDebuger {
 
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                     && context.getExternalCacheDir() != null) {
-                defaultDir = context.getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                defaultDir = context.getExternalCacheDir() + FILE_SEP + "mqttlog" + FILE_SEP;
             } else {
-                defaultDir = context.getCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                defaultDir = context.getCacheDir() + FILE_SEP + "mqttlog" + FILE_SEP;
             }
         }
 
