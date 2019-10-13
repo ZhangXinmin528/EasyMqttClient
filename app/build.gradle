@@ -15,7 +15,7 @@ android {
     }
 
     signingConfigs {
-        def filePath = 'F:/8-mqtt/EasyMqttClient/sign/keystore.jks'
+        def filePath = '/Users/zhangxinmin/AndroidStudy/EasyMqttClient/sign/keystore.jks'
         def pwd = '20190101'
         def alias = 'com.coding.zxm'
 
