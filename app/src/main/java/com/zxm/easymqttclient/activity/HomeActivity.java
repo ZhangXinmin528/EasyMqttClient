@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -20,7 +22,6 @@ import com.coding.zxm.mqtt_master.client.MqttClientManager;
 import com.coding.zxm.mqtt_master.client.MqttConfig;
 import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
-import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
@@ -35,7 +36,7 @@ import com.zxm.easymqttclient.util.TimeUtil;
  * Copyright (c) 2018 . All rights reserved.
  * 建立连接
  */
-public class NewConnectionActivity extends BaseActivity implements
+public class HomeActivity extends BaseActivity implements
         View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_EXTERNAL = 1001;
@@ -59,11 +60,11 @@ public class NewConnectionActivity extends BaseActivity implements
     private boolean isRetained;
 
     private PollingSender mPollingSender;
-    private boolean isAutoDisconnect;
+    private boolean mIsDisconnected;
 
     @Override
     protected Object setLayout() {
-        return R.layout.activity_new_connection;
+        return R.layout.activity_home;
     }
 
     @Override
@@ -207,7 +208,7 @@ public class NewConnectionActivity extends BaseActivity implements
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
                                  MqttDebuger.i(TAG, "Mqtt build connection success！");
 
-                                 isAutoDisconnect = false;
+                                 mIsDisconnected = false;
 
                                  MqttDebuger.file(TAG, "Mqtt connection params : \n" +
                                          MqttClientManager.getInstance().getMqttConfig().getConfigParams());
@@ -326,7 +327,7 @@ public class NewConnectionActivity extends BaseActivity implements
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
                 MqttDebuger.i(TAG, "disconnect..success~");
-                isAutoDisconnect = true;
+                mIsDisconnected = true;
             }
 
             @Override
@@ -355,6 +356,17 @@ public class NewConnectionActivity extends BaseActivity implements
         }
     }
 
+    private void initBottomDialog() {
+        final View rootView = LayoutInflater.from(mContext)
+                .inflate(R.layout.layout_log_info, null);
+
+        if (rootView != null) {
+            final RecyclerView rv = rootView.findViewById(R.id.rv_log);
+
+        }
+
+    }
+
     private final class PollingReceiver extends BroadcastReceiver {
 
         @Override
@@ -368,7 +380,7 @@ public class NewConnectionActivity extends BaseActivity implements
                     //进行下次定时任务
                     mPollingSender.schedule();
                     if (!MqttClientManager.getInstance().isConnected()
-                            && !isAutoDisconnect) {
+                            && !mIsDisconnected) {
 
                         buildConnection();
                     }
@@ -376,4 +388,6 @@ public class NewConnectionActivity extends BaseActivity implements
             }
         }
     }
+
+
 }

@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
     }
 }
 
@@ -32,6 +32,7 @@ ext {
 
     // App dependencies
     supportLibraryVersion = '28.0.0'
+    constraintLayoutVersion = '1.1.3'
 
     //mqtt
     mqttClientVersion = '1.2.0'

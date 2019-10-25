@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EasyMqttClient</string>
+    <string name="app_name">MqttClient</string>
 
     <string name="all_add_client">Add</string>
     <string name="all_log_print">Print Log</string>
