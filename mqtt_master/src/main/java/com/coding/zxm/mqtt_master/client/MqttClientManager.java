@@ -300,36 +300,40 @@ public final class MqttClientManager {
      *                 completes. Use null if not required.
      */
     public void disconnect(@NonNull MqttActionListener listener) {
+
+        if (mqttClient == null) {
+            MqttDebuger.e(TAG, "MqttAndroidClient is null,con't dissconnect with the server!");
+            return;
+        }
+
         MqttDebuger.i(TAG, "[disconnect()]-->Mqtt client is going to disconnect!" + mqttClient.hashCode());
 
-        if (mqttClient != null) {
-            if (!mqttClient.isConnected()) {
-                MqttDebuger.i(TAG, "[disconnect()]-->Mqtt client has not build the connection!");
-                return;
-            }
+        if (!mqttClient.isConnected()) {
+            MqttDebuger.i(TAG, "[disconnect()]-->Mqtt client has not build the connection!");
+            return;
+        }
 
-            try {
-                mqttClient.disconnect(null, new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
-                        if (listener != null) {
-                            listener.onSuccess();
-                        }
-                        MqttDebuger.file(TAG, "[disconnect()]-->Mqtt client disconnect success!");
+        try {
+            mqttClient.disconnect(null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    if (listener != null) {
+                        listener.onSuccess();
                     }
+                    MqttDebuger.file(TAG, "[disconnect()]-->Mqtt client disconnect success!");
+                }
 
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        if (listener != null) {
-                            listener.onFailure(exception);
-                        }
-                        MqttDebuger.file(MqttDebuger.E, TAG, "[disconnect()]-->Mqtt client disconnect falied!");
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    if (listener != null) {
+                        listener.onFailure(exception);
                     }
-                });
-            } catch (MqttException e) {
-                e.printStackTrace();
-                MqttDebuger.e(TAG, "[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
-            }
+                    MqttDebuger.file(MqttDebuger.E, TAG, "[disconnect()]-->Mqtt client disconnect falied!");
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+            MqttDebuger.e(TAG, "[disconnect()]-->Mqtt client disconnect got exception : " + e.toString());
         }
     }
 
