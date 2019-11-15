@@ -7,7 +7,7 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
+        versionCode 3
         versionName rootProject.ext.mqttMasterVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

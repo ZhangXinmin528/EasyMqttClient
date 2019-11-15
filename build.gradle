@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
 
@@ -39,7 +39,7 @@ ext {
     mqttServiceVersion = '1.1.1'
 
     //logger
-    mqttMasterVersion = '1.0.2'
+    mqttMasterVersion = '1.0.3'
 
     //util
     utilVersion = '1.0.1'
