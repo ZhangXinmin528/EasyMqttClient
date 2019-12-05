@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zxm.fragmentdemo.MainActivity">
+    <item
+        android:id="@+id/menu_log"
+        android:icon="@drawable/icon_log"
+        android:title="log_info"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -39,4 +39,13 @@ public class Constant {
             "" : "t@ikang@2019";
 
     public static final String MQTT_TOPIC = "infrared/793619615";
+
+    //******************************Log tag*********************//
+
+    public static final String TAG_CONNECTION = "CONNECTION";
+    public static final String TAG_DISCONNECTION = "DISCONNECTION";
+    public static final String TAG_SUBSCRIBTION = "SUBSCRIBTION";
+    public static final String TAG_PUBLISHING = "PUBLISHING";
+    public static final String TAG_MESSAGE = "MESSAGE";
+    public static final String TAG_ERROR = "ERROR";
 }

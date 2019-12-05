@@ -16,6 +16,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -42,5 +43,7 @@ ext {
     mqttMasterVersion = '1.0.3'
 
     //util
-    utilVersion = '1.0.1'
+    utilVersion = '1.0.4'
+
+    recyclerAdapterVersion = "2.9.40"
 }

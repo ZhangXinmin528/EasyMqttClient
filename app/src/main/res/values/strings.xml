@@ -1,25 +1,34 @@
 <resources>
-    <string name="app_name">MqttClient</string>
-
-    <string name="all_add_client">Add</string>
-    <string name="all_log_print">Print Log</string>
+    <string name="app_name">EasyMqttClient</string>
 
     <string name="all_input_client_id">Client Id</string>
     <string name="all_input_server">Mqtt Host</string>
     <string name="all_input_port">Mqtt Port</string>
+    <string name="all_input_user_name">User Name</string>
+    <string name="all_input_password">Password</string>
     <string name="all_clear_session">Clear Session</string>
     <string name="all_auto_subscribe">Auto Subscribe</string>
     <string name="all_auto_reconnect">Auto Reconnect</string>
+    <string name="all_connection">Build Connection</string>
     <string name="all_build_connection">Connect</string>
     <string name="all_subscribe_publish">Subscribe And Publish</string>
-
     <string name="all_topic">Topic</string>
     <string name="all_message">Message</string>
     <string name="all_qos">QOS</string>
     <string name="all_subscribe">Subscribe</string>
+    <string name="all_subscribe_topic">Subscribe Topic</string>
     <string name="all_publish">Publish</string>
+    <string name="all_publish_message">Publish Messages</string>
     <string name="all_disconnect">Disconnect</string>
     <string name="all_retained">Retained</string>
+    <string name="all_expansion">Expansion</string>
+    <string name="all_shrink">Shrink</string>
+    <string name="all_log_title">Log Information</string>
+
+    <string name="all_tips_refuse_build_connection">The key parameters are not configured, and the connection to the server cannot be established ~</string>
+    <string name="all_tips_empty_topic">The publication topic has not yet been entered ~ </string>
+    <string name="all_tips_refuse_other_operation">No connection has been established with the MQTT server ~</string>
+    <string name="all_tips_empty_message">No message has been entered yet ~</string>
 
     <!--permission-->
     <string name="rationale_camera">Disable camera permissions, you will not be able to use camera related functions~</string>
@@ -29,5 +38,6 @@
     <string name="rationale_phone">Disabling phone permissions, you will not be able to use device phone related features~</string>
     <string name="rationale_sms">Disable SMS permission, you will not be able to use device SMS related function~</string>
     <string name="rationale_storage">Disable storage space permissions, you will not be able to use the file read and write or delete function ~</string>
+
 
 </resources>

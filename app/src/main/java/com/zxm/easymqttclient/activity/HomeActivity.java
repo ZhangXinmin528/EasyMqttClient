@@ -1,21 +1,25 @@
 package com.zxm.easymqttclient.activity;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coding.zxm.mqtt_master.client.MqttClientManager;
@@ -24,12 +28,15 @@ import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
+import com.zxm.easymqttclient.adapter.MqttLogAdapter;
 import com.zxm.easymqttclient.base.BaseActivity;
-import com.zxm.easymqttclient.polling.PollingSender;
+import com.zxm.easymqttclient.model.LogEntity;
 import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.DialogUtil;
 import com.zxm.easymqttclient.util.PermissionChecker;
-import com.zxm.easymqttclient.util.TimeUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ZhangXinmin on 2018/11/19.
@@ -42,12 +49,16 @@ public class HomeActivity extends BaseActivity implements
     private static final int REQUEST_EXTERNAL = 1001;
 
     //连接
+    private TextView mConnectTv;
+    private TextView mExpansionTv;
     private TextInputEditText mClientIdEt;
     private TextInputEditText mServerEt;
     private TextInputEditText mPortEt;
-    private boolean isClearSession;
-    private boolean isAutoSubscribe;
-    private boolean isAutoReconnect;
+    private boolean mIsClearSession;
+    private boolean mIsAutoReconnect;
+    private LinearLayoutCompat mExpansionLayout;
+    private TextInputEditText mUserNameEt;
+    private TextInputEditText mPwdEt;
 
     //订阅主题
     private TextInputEditText mSubscribeTopicEt;
@@ -57,10 +68,14 @@ public class HomeActivity extends BaseActivity implements
     private TextInputEditText mPublishTopicEt;
     private TextInputEditText mMessageEt;
     private int mPubQos;
-    private boolean isRetained;
+    private boolean mIsRetained;
 
-    private PollingSender mPollingSender;
-    private boolean mIsDisconnected;
+    private boolean mIsConnected;
+
+    //日志
+    private MqttLogAdapter mAdapter;
+    private List<LogEntity> mLogList;
+    private BottomSheetDialog mLogDialog;
 
     @Override
     protected Object setLayout() {
@@ -71,9 +86,11 @@ public class HomeActivity extends BaseActivity implements
     protected void initParamsAndViews() {
         checkStrogePermission();
 
-        mPollingSender =
-                new PollingSender(mContext, PollingSender.INTERVAL_FIVE_MINUTES, new PollingReceiver());
+        mIsAutoReconnect = true;
+        mIsClearSession = false;
+        mIsConnected = false;
 
+        mLogList = new ArrayList<>();
     }
 
     /**
@@ -90,24 +107,25 @@ public class HomeActivity extends BaseActivity implements
     @Override
     protected void initViews() {
         //0.连接
+        mConnectTv = findViewById(R.id.tv_connect);
+        mConnectTv.setOnClickListener(this);
+
+        mExpansionTv = findViewById(R.id.tv_connection_expansion);
+        mExpansionTv.setOnClickListener(this);
+
+        mExpansionLayout = findViewById(R.id.layout_home_connection_expansion);
+        mExpansionLayout.setVisibility(View.GONE);
+
         mClientIdEt = findViewById(R.id.et_client_id);
         mServerEt = findViewById(R.id.et_server);
-
         mPortEt = findViewById(R.id.et_port);
+        mUserNameEt = findViewById(R.id.et_username);
+        mPwdEt = findViewById(R.id.et_password);
 
         final CheckBox sessionCb = findViewById(R.id.cb_session);
         sessionCb.setOnCheckedChangeListener(this);
-        final CheckBox autoSubSb = findViewById(R.id.cb_auto_subscribe);
-        autoSubSb.setOnCheckedChangeListener(this);
-        isAutoSubscribe = true;
-        final CheckBox autoReconnect = findViewById(R.id.cb_auto_reconnect);
-        autoReconnect.setOnCheckedChangeListener(this);
-//        isAutoReconnect = false;
-
-        //建立连接
-        findViewById(R.id.btn_connect).setOnClickListener(this);
-        //断开连接
-        findViewById(R.id.btn_disconnect).setOnClickListener(this);
+        final CheckBox autoReconnectCb = findViewById(R.id.cb_auto_reconnect);
+        autoReconnectCb.setOnCheckedChangeListener(this);
 
         //1.订阅主题
         mSubscribeTopicEt = findViewById(R.id.et_subscribe_topic);
@@ -118,7 +136,7 @@ public class HomeActivity extends BaseActivity implements
             mSubQos = Integer.parseInt(target);
         });
         //订阅
-        findViewById(R.id.btn_subscribe).setOnClickListener(this);
+        findViewById(R.id.tv_subscribe).setOnClickListener(this);
 
         //2.发布
         mPublishTopicEt = findViewById(R.id.et_publish_topic);
@@ -132,71 +150,131 @@ public class HomeActivity extends BaseActivity implements
 
         final CheckBox remainCb = findViewById(R.id.cb_retained);
         remainCb.setOnCheckedChangeListener(this);
-        findViewById(R.id.btn_publish).setOnClickListener(this);
-    }
+        findViewById(R.id.tv_publish).setOnClickListener(this);
 
-    @Override
-    protected void onStart() {
-        if (mPollingSender != null &&
-                !mPollingSender.isPollingStarted()) {
-            mPollingSender.start();
+        //底部日志
+        final View rootView = LayoutInflater.from(mContext)
+                .inflate(R.layout.layout_log_info, null);
+
+        if (rootView != null) {
+            //日志
+            RecyclerView recyclerView = rootView.findViewById(R.id.rv_log);
+            rootView.findViewById(R.id.tv_log_title).setOnClickListener(this);
+
+            mAdapter = new MqttLogAdapter(mLogList);
+            recyclerView.setAdapter(mAdapter);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+            recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
+
+
+            mLogDialog = new BottomSheetDialog(mContext, R.style.Theme_Style_Dialog);
+            mLogDialog.setContentView(rootView);
+
+           /* BottomSheetBehavior behavior = BottomSheetBehavior.from(rootView);
+            behavior.setPeekHeight(ScreenUtil.getScreenHeight(mContext) / 2);
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        mLogDialog.dismiss();
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });*/
         }
-        super.onStart();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_connect:
-                buildConnection();
+            //连接
+            case R.id.tv_connect:
+                if (!mIsConnected) {
+                    buildConnection();
+                } else {
+                    disconnect();
+                }
                 break;
-            case R.id.btn_disconnect:
-                disconnect();
+            case R.id.tv_connection_expansion:
+                if (mExpansionLayout.isShown()) {
+                    mExpansionLayout.setVisibility(View.GONE);
+                    mExpansionTv.setText(R.string.all_expansion);
+                } else {
+                    mExpansionLayout.setVisibility(View.VISIBLE);
+                    mExpansionTv.setText(R.string.all_shrink);
+                }
                 break;
-            case R.id.btn_subscribe:
+            //订阅
+            case R.id.tv_subscribe:
                 subscribeTopic();
                 break;
-            case R.id.btn_publish:
+            //发布
+            case R.id.tv_publish:
                 publishMessage();
+                break;
+            case R.id.tv_log_title:
+                mLogDialog.dismiss();
                 break;
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_log:
+                Toast.makeText(mContext, "Count : " + mLogList.size(), Toast.LENGTH_SHORT).show();
+                mLogDialog.show();
+                mAdapter.notifyDataSetChanged();
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //创建连接
     private void buildConnection() {
-        final String inputValue = mClientIdEt.getEditableText().toString().trim();
-        final String tempClientId = TextUtils.isEmpty(inputValue) ?
-                "EasyMqttClient" :
-                inputValue;
+        final String clientId = mClientIdEt.getEditableText().toString().trim();
 
-        final String clientId = tempClientId.contains("_") ?
-                "EasyMqttClient_" + System.currentTimeMillis() :
-                tempClientId + "_" + System.currentTimeMillis();
+        final String host = mServerEt.getEditableText().toString().trim();
+        final String port = mPortEt.getEditableText().toString().trim();
+        final String userName = mUserNameEt.getEditableText().toString().trim();
+        final String pwd = mPwdEt.getEditableText().toString().trim();
 
-        mClientIdEt.setText(clientId);
-
-        String host = mServerEt.getEditableText().toString().trim();
-        String port = mPortEt.getEditableText().toString().trim();
-
-        if (TextUtils.isEmpty(host)) {
-            host = Constant.MQTT_HOST;
-            mServerEt.setText(Constant.MQTT_HOST);
-        }
-        if (TextUtils.isEmpty(port)) {
-            port = Constant.MQTT_PORT;
-            mPortEt.setText(Constant.MQTT_PORT);
+        if (TextUtils.isEmpty(host) || TextUtils.isEmpty(port) || TextUtils.isEmpty(clientId)) {
+            Toast.makeText(mContext, getString(R.string.all_tips_refuse_build_connection), Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        final MqttConfig config = new MqttConfig.Builder(getApplicationContext())
-                .setClientId(clientId)
+        final MqttConfig.Builder builder = new MqttConfig.Builder(getApplicationContext());
+
+        builder.setClientId(clientId)
                 .setHost(host)
                 .setPort(port)
-                .setAutomaticReconnect(isAutoReconnect)
-                .setCleanSession(isClearSession)
-                .setKeepalive(20)
-                .setUserName(Constant.MQTT_NAME)
-                .setPassWord(Constant.MQTT_PWD)
-                .create();
+                .setAutomaticReconnect(mIsAutoReconnect)
+                .setCleanSession(mIsClearSession)
+                .setKeepalive(20);
+
+        if (!TextUtils.isEmpty(userName)) {
+            builder.setUserName(userName);
+        }
+
+        if (!TextUtils.isEmpty(pwd)) {
+            builder.setPassWord(port);
+        }
+
+        final MqttConfig config = builder.create();
 
         MqttClientManager.getInstance().init(config);
 
@@ -206,18 +284,17 @@ public class HomeActivity extends BaseActivity implements
                              @Override
                              public void onSuccess() {
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
-                                 MqttDebuger.i(TAG, "Mqtt build connection success！");
-
-                                 mIsDisconnected = false;
-
-                                 MqttDebuger.file(TAG, "Mqtt connection params : \n" +
-                                         MqttClientManager.getInstance().getMqttConfig().getConfigParams());
+                                 MqttDebuger.i(TAG, "Mqtt build connection success!");
+                                 addLogEvent(Constant.TAG_CONNECTION, "Mqtt build connection success!");
+//                                 MqttDebuger.file(TAG, "Mqtt connection params : \n" +
+//                                         MqttClientManager.getInstance().getMqttConfig().getConfigParams());
                              }
 
                              @Override
                              public void onFailure(Throwable exception) {
                                  Toast.makeText(mContext, "Mqtt建立连接失败！", Toast.LENGTH_SHORT).show();
-                                 MqttDebuger.e(TAG, "Mqtt build connection failed！");
+                                 MqttDebuger.e(TAG, "Mqtt build connection failed!");
+                                 addLogEvent(Constant.TAG_ERROR, "Mqtt build connection failed!");
                              }
                          },
                         new SimpleConnectionMqttCallback() {
@@ -226,34 +303,56 @@ public class HomeActivity extends BaseActivity implements
                                 super.messageArrived(topic, message, qos);
                                 MqttDebuger.i(TAG, "messageArrived~");
                                 MqttDebuger.json(message);
+                                addLogEvent(Constant.TAG_MESSAGE, "Message of [" + topic + "] has arrived : " + message);
                             }
 
                             @Override
                             public void connectionLost(Throwable cause) {
                                 super.connectionLost(cause);
+                                mIsConnected = false;
+                                switchConnectState();
+                                clearMqttData();
+
                                 if (cause == null) {
                                     MqttDebuger.e(TAG, "connectionLost..cause is null~");
+                                    addLogEvent(Constant.TAG_ERROR, "Mqtt connection to the server is lost, while the cause is unknown!");
                                 } else {
                                     MqttDebuger.e(TAG, "connectionLost..cause : " + cause.toString());
+                                    addLogEvent(Constant.TAG_ERROR, "Mqtt connection to the server is lost, while the cause is " + cause.toString());
                                 }
                             }
 
                             @Override
                             public void connectComplete(boolean reconnect, String serverURI) {
                                 super.connectComplete(reconnect, serverURI);
+                                addLogEvent(Constant.TAG_CONNECTION, "Mqtt connection to the server is completed successfully," +
+                                        " while the params reconnect [" + reconnect + "] & serverURI [" + serverURI + "]!");
+                                mIsConnected = true;
                                 MqttDebuger.i(TAG, "connectComplete..reconnect:" + reconnect);
-                                if (isAutoSubscribe && !reconnect) {
-                                    //重新订阅主题，否则收不到消息
-                                    subscribeTopic();
-                                }
+                                //重新订阅主题，否则收不到消息
+                                subscribeTopic();
+                                switchConnectState();
                             }
                         });
+    }
+
+    private void switchConnectState() {
+        if (mIsConnected) {
+            mConnectTv.setText(R.string.all_disconnect);
+        } else {
+            mConnectTv.setText(R.string.all_connection);
+        }
     }
 
     private void subscribeTopic() {
         final String topic = mSubscribeTopicEt.getEditableText().toString().trim();
         if (TextUtils.isEmpty(topic)) {
-            Toast.makeText(mContext, "请输入订阅Topic!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.all_tips_empty_topic), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!mIsConnected) {
+            Toast.makeText(mContext, getString(R.string.all_tips_refuse_other_operation), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -261,14 +360,15 @@ public class HomeActivity extends BaseActivity implements
                 .subscribe(topic, mSubQos, new MqttActionListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(mContext, "订阅成功", Toast.LENGTH_SHORT).show();
                         MqttDebuger.i(TAG, "subscribeTopic..topic : [" + topic + "]..success!");
+                        addLogEvent(Constant.TAG_SUBSCRIBTION, "Mqtt subscribe the topic [" + topic + "] successfully!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
                         MqttDebuger.e(TAG, "subscribeTopic..topic : [" + topic + "]..failure!");
+                        addLogEvent(Constant.TAG_ERROR, "Mqtt subscribe the topic [" + topic + "] failied!");
                     }
                 });
     }
@@ -278,7 +378,7 @@ public class HomeActivity extends BaseActivity implements
         final String msg = mMessageEt.getEditableText().toString().trim();
 
         if (TextUtils.isEmpty(topic)) {
-            Toast.makeText(mContext, "请输入发布Topic!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.all_tips_empty_topic), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -287,18 +387,25 @@ public class HomeActivity extends BaseActivity implements
             return;
         }
 
+        if (!mIsConnected) {
+            Toast.makeText(mContext, getString(R.string.all_tips_refuse_other_operation), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         MqttClientManager.getInstance()
-                .publish(topic, msg, mPubQos, isRetained, new MqttActionListener() {
+                .publish(topic, msg, mPubQos, mIsRetained, new MqttActionListener() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
                         MqttDebuger.i(TAG, "publishMessage..message [: " + msg + "]..success!");
+                        addLogEvent(Constant.TAG_PUBLISHING, "Mqtt publish the message [" + msg + "] successfully!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "发布失败", Toast.LENGTH_SHORT).show();
                         MqttDebuger.e(TAG, "publishMessage..message : [" + msg + "]..failure!");
+                        addLogEvent(Constant.TAG_ERROR, "Mqtt publish the topic [" + topic + "] failied!");
                     }
                 });
 
@@ -327,67 +434,62 @@ public class HomeActivity extends BaseActivity implements
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
                 MqttDebuger.i(TAG, "disconnect..success~");
-                mIsDisconnected = true;
+                mIsConnected = false;
+                switchConnectState();
+                addLogEvent(Constant.TAG_DISCONNECTION, "Mqtt disconnect to the server successfully!");
+                clearMqttData();
             }
 
             @Override
             public void onFailure(Throwable exception) {
                 Toast.makeText(mContext, "断开连接失败", Toast.LENGTH_SHORT).show();
                 MqttDebuger.e(TAG, "disconnect..cause : " + exception.toString());
+                addLogEvent(Constant.TAG_ERROR, "Mqtt disconnect to the server has failied!");
             }
         });
+    }
+
+    private void clearMqttData() {
+        if (!mIsConnected) {
+            mClientIdEt.getEditableText().clear();
+            mServerEt.getEditableText().clear();
+            mPortEt.getEditableText().clear();
+
+            mUserNameEt.getEditableText().clear();
+            mPwdEt.getEditableText().clear();
+
+            mSubscribeTopicEt.getEditableText().clear();
+
+            mPublishTopicEt.getEditableText().clear();
+            mMessageEt.getEditableText().clear();
+        }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.cb_session:
-                isClearSession = isChecked;
+                mIsClearSession = isChecked;
                 break;
             case R.id.cb_auto_reconnect:
-                isAutoReconnect = isChecked;
-                break;
-            case R.id.cb_auto_subscribe:
-                isAutoSubscribe = isChecked;
+                mIsAutoReconnect = isChecked;
                 break;
             case R.id.cb_retained:
-                isRetained = isChecked;
+                mIsRetained = isChecked;
                 break;
         }
     }
 
-    private void initBottomDialog() {
-        final View rootView = LayoutInflater.from(mContext)
-                .inflate(R.layout.layout_log_info, null);
-
-        if (rootView != null) {
-            final RecyclerView rv = rootView.findViewById(R.id.rv_log);
-
-        }
-
+    private void addLogEvent(@NonNull String tag, @NonNull String message) {
+        if (TextUtils.isEmpty(tag) || TextUtils.isEmpty(message))
+            return;
+        final LogEntity entity = new LogEntity();
+        entity.setTag(tag);
+        entity.setMessage(message);
+        entity.setTimeMills(System.currentTimeMillis());
+        mLogList.add(0, entity);
+        MqttDebuger.e(TAG, "log count : " + mLogList.size());
+        mAdapter.notifyDataSetChanged();
     }
-
-    private final class PollingReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                final String action = intent.getAction();
-                MqttDebuger.file(TAG, "PollingReceiver..onReceive : "
-                        + TimeUtil.getNowTimeStamp(PollingSender.DATE_FORMAT));
-
-                if (!TextUtils.isEmpty(action)) {
-                    //进行下次定时任务
-                    mPollingSender.schedule();
-                    if (!MqttClientManager.getInstance().isConnected()
-                            && !mIsDisconnected) {
-
-                        buildConnection();
-                    }
-                }
-            }
-        }
-    }
-
 
 }

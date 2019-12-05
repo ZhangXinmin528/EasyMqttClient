@@ -3,6 +3,7 @@ package com.zxm.easymqttclient.app;
 import android.app.Application;
 
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
+import com.zxm.easymqttclient.BuildConfig;
 
 
 /**
@@ -18,6 +19,6 @@ public class MqttApplication extends Application {
     }
 
     private void initLogConfig() {
-        MqttDebuger.setDebugerEnable(getApplicationContext(), true);
+        MqttDebuger.setDebugerEnable(getApplicationContext(), BuildConfig.DEBUG);
     }
 }

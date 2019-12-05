@@ -1,25 +1,35 @@
 <resources>
     <string name="app_name">EasyMqttClient</string>
 
-    <string name="all_add_client">添加</string>
-    <string name="all_log_print">打印日志</string>
-
     <string name="all_input_client_id">Client Id</string>
     <string name="all_input_server">Mqtt Host</string>
     <string name="all_input_port">Mqtt Port</string>
+    <string name="all_input_user_name">User Name</string>
+    <string name="all_input_password">Password</string>
     <string name="all_clear_session">Clear Session</string>
     <string name="all_auto_subscribe">自动订阅</string>
     <string name="all_auto_reconnect">自动重连</string>
-    <string name="all_build_connection">建立连接</string>
+    <string name="all_connection">建立连接</string>
+    <string name="all_build_connection">连接</string>
     <string name="all_subscribe_publish">发布订阅</string>
-
     <string name="all_topic">Topic</string>
     <string name="all_message">消息</string>
     <string name="all_qos">QOS</string>
     <string name="all_subscribe">订阅</string>
+    <string name="all_subscribe_topic">订阅主题</string>
     <string name="all_publish">发布</string>
+    <string name="all_publish_message">发布消息</string>
     <string name="all_disconnect">断开连接</string>
     <string name="all_retained">Retained</string>
+    <string name="all_expansion">展开</string>
+    <string name="all_shrink">收缩</string>
+    <string name="all_log_title">日志信息</string>
+
+    <!--tips-->
+    <string name="all_tips_refuse_build_connection">关键参数未配置，不能建立与服务器的连接~</string>
+    <string name="all_tips_empty_topic">还没有输入发布主题~</string>
+    <string name="all_tips_refuse_other_operation">还没有与MQTT服务器建立连接~</string>
+    <string name="all_tips_empty_message">还未输入要发布的消息~</string>
 
     <!--permission-->
     <string name="rationale_camera">禁用相机权限，将不能使用拍照相关功能~</string>
