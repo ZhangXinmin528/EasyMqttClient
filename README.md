@@ -12,7 +12,7 @@ This library is the secondary packaging based on eclipse's paho.mqtt.android, wh
 
 Download
 ---
-Download from application market.
+Download example apk from application market.
 <p align="center">
   <img alt="logo" src="https://www.coolapk.com/qr/image?data=base64:aHR0cHM6Ly93d3cuY29vbGFway5jb20vYXBrL2NvbS56eG0uZWFzeW1xdHRjbGllbnQ_ZnJvbT1xcg~~&h=d42ee57c"/>
 </p>
@@ -20,9 +20,9 @@ Download from application market.
 Usage
 ---
 
-#####1.Add aar(mqtt_service_1.0.3_release.aar) to your project.
+##### 1.Add aar(mqtt_service_1.0.3_release.aar) to your project.
 
-#####2.Confiure your clientId,host,port for your mqtt client.
+##### 2.Confiure your clientId,host,port for your mqtt client.
 
 		final MqttConfig.Builder builder = new MqttConfig.Builder(getApplicationContext());
 
@@ -45,11 +45,11 @@ Usage
 
 If your mqtt server need username and password to accept yout connection,your should configure these information.
 
-#####3.Init your mqtt client.
+##### 3.Init your mqtt client.
 
 		MqttClientManager.getInstance().init(config);
 
-#####4.Build your connection.
+##### 4.Build your connection.
 
 		 MqttClientManager
                 .getInstance()
@@ -84,7 +84,7 @@ If your mqtt server need username and password to accept yout connection,your sh
                             }
                         });
 
-#####5.Subscribe topics.
+##### 5.Subscribe topics.
 If you want to receive messages from the mqtt server,you should subscribe series of topics.
 
 		MqttClientManager.getInstance()
