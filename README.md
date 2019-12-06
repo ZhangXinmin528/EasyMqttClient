@@ -101,7 +101,7 @@ If you want to receive messages from the mqtt server,you should subscribe series
                 });
 Please refer to the code in the App Module related Activity in the project.
 
-#####6.Publish messages.
+##### 6.Publish messages.
 
 		MqttClientManager.getInstance()
                 .publish(topic, msg, mPubQos, mIsRetained, new MqttActionListener() {
@@ -116,7 +116,7 @@ Please refer to the code in the App Module related Activity in the project.
                     }
                 });
 
-#####7.Disconnect to the server.
+##### 7.Disconnect to the server.
 
 		MqttClientManager.getInstance().disconnect(new MqttActionListener() {
             @Override
