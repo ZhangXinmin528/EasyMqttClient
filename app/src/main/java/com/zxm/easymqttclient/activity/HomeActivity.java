@@ -156,6 +156,7 @@ public class HomeActivity extends BaseActivity implements
         final View rootView = LayoutInflater.from(mContext)
                 .inflate(R.layout.layout_log_info, null);
 
+
         if (rootView != null) {
             //日志
             RecyclerView recyclerView = rootView.findViewById(R.id.rv_log);
@@ -168,25 +169,9 @@ public class HomeActivity extends BaseActivity implements
             recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
 
 
-            mLogDialog = new BottomSheetDialog(mContext, R.style.Theme_Style_Dialog);
+            mLogDialog = new BottomSheetDialog(mContext, R.style.Theme_Design_BottomSheetDialog);
             mLogDialog.setContentView(rootView);
 
-           /* BottomSheetBehavior behavior = BottomSheetBehavior.from(rootView);
-            behavior.setPeekHeight(ScreenUtil.getScreenHeight(mContext) / 2);
-            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        mLogDialog.dismiss();
-                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                }
-            });*/
         }
     }
 
@@ -237,7 +222,6 @@ public class HomeActivity extends BaseActivity implements
                 Toast.makeText(mContext, "Count : " + mLogList.size(), Toast.LENGTH_SHORT).show();
                 mLogDialog.show();
                 mAdapter.notifyDataSetChanged();
-
                 break;
         }
         return super.onOptionsItemSelected(item);
