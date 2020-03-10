@@ -2,4 +2,3 @@
 1>自动重连指的是弱网环境导致connectionLost，从而自动重连，重连成功后会回调connectComplete方法；
 2>设置允许自动重连，当没有调用disconnect(断开连接)方法时，此时断开网络连接，会导致连接断开，回调connectionLost方法；
 当恢复网络连接时，会自动重新连接，同时回调connectComplete方法；
-3>
