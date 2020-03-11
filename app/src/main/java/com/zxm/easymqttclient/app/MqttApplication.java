@@ -3,6 +3,7 @@ package com.zxm.easymqttclient.app;
 import android.app.Application;
 
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
+import com.tencent.bugly.Bugly;
 import com.zxm.easymqttclient.BuildConfig;
 
 
@@ -15,10 +16,16 @@ public class MqttApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        initBugly();
+
         initLogConfig();
     }
 
     private void initLogConfig() {
         MqttDebuger.setDebugerEnable(getApplicationContext(), BuildConfig.DEBUG);
+    }
+
+    private void initBugly(){
+        Bugly.init(this,"60b2e0b6ed",false);
     }
 }
