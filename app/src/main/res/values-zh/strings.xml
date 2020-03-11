@@ -31,6 +31,12 @@
     <string name="all_tips_refuse_other_operation">还没有与MQTT服务器建立连接~</string>
     <string name="all_tips_empty_message">还未输入要发布的消息~</string>
 
+    <!--menu-->
+    <string name="all_navigation_menu_logger">Logger</string>
+    <string name="all_navigation_menu_devices_info">Device information</string>
+    <string name="all_navigation_menu_setting">Settings</string>
+    <string name="all_navigation_item_feedback">Send feedback</string>
+
     <!--permission-->
     <string name="rationale_camera">禁用相机权限，将不能使用拍照相关功能~</string>
     <string name="rationale_contact">禁用通讯录权限，将不能使用联系人相关功能~</string>
@@ -39,4 +45,9 @@
     <string name="rationale_phone">禁用电话权限，将不能使用设备电话相关功能~</string>
     <string name="rationale_sms">禁用短信权限，将不能使用设备短信相关功能~</string>
     <string name="rationale_storage">禁用存储空间权限，将不能使用文件的读写或删除功能~</string>
+
+    <!--Setting-->
+    <string name="all_app_version">v%1$s</string>
+    <string name="all_blog_url">博客地址：</string>
+    <string name="all_personal_email">个人邮箱：</string>
 </resources>
