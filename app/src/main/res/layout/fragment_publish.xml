@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@drawable/shape_white_bg"
+        android:focusable="true"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -47,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp">
 
             <android.support.design.widget.TextInputEditText

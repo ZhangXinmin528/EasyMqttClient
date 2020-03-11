@@ -31,6 +31,7 @@
     <string name="all_tips_empty_message">No message has been entered yet ~</string>
 
     <!--menu-->
+    <string name="all_navigation_menu_connection">Connection</string>
     <string name="all_navigation_menu_logger">Logger</string>
     <string name="all_navigation_menu_devices_info">Device information</string>
     <string name="all_navigation_menu_setting">Settings</string>

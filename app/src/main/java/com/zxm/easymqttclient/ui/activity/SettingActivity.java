@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.activity;
+package com.zxm.easymqttclient.ui.activity;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;

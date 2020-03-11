@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.fragment;
+package com.zxm.easymqttclient.ui.fragment;
 
 import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
@@ -12,6 +12,8 @@ import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseFragment;
+import com.zxm.easymqttclient.util.Constant;
+import com.zxm.easymqttclient.util.DisplayUtil;
 
 /**
  * Created by ZhangXinmin on 2020/3/11.
@@ -78,14 +80,16 @@ public class SubscribeFragment extends BaseFragment implements View.OnClickListe
                     @Override
                     public void onSuccess() {
                         MqttDebuger.i(tag, "subscribeTopic..topic : [" + topic + "]..success!");
-//                        addLogEvent(Constant.TAG_SUBSCRIBTION, "Mqtt subscribe the topic [" + topic + "] successfully!");
+                        DisplayUtil.sendLogEvent(mContext, Constant.TAG_SUBSCRIBTION,
+                                "Mqtt subscribe the topic [" + topic + "] successfully!");
                     }
 
                     @Override
                     public void onFailure(Throwable exception) {
                         Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
                         MqttDebuger.e(tag, "subscribeTopic..topic : [" + topic + "]..failure!");
-//                        addLogEvent(Constant.TAG_ERROR, "Mqtt subscribe the topic [" + topic + "] failied!");
+                        DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR,
+                                "Mqtt subscribe the topic [" + topic + "] failied!");
                     }
                 });
     }

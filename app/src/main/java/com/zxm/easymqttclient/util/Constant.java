@@ -48,4 +48,12 @@ public class Constant {
     public static final String TAG_PUBLISHING = "PUBLISHING";
     public static final String TAG_MESSAGE = "MESSAGE";
     public static final String TAG_ERROR = "ERROR";
+
+    //BroadcastReceiver
+    public static final String ACTION_LOG_EVENT = "com.zxm.easymqttclient.log";
+
+    public static final String EXTRA_TAG = "extra_tag";
+
+    public static final String EXTRA_MSG = "extra_msg";
+
 }

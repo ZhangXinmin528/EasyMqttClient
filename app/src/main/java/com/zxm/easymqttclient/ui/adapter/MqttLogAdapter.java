@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.adapter;
+package com.zxm.easymqttclient.ui.adapter;
 
 import android.graphics.Color;
 import android.support.annotation.Nullable;

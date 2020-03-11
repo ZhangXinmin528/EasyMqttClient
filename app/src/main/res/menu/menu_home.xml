@@ -4,7 +4,8 @@
     tools:context="com.zxm.fragmentdemo.MainActivity">
     <item
         android:id="@+id/menu_log"
-        android:icon="@drawable/icon_log"
+        android:icon="@drawable/ic_fly_refresh_info"
         android:title="log_info"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
 </menu>

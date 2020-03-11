@@ -1,29 +1,36 @@
-package com.zxm.easymqttclient.activity;
+package com.zxm.easymqttclient.ui.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.zxm.easymqttclient.R;
-import com.zxm.easymqttclient.adapter.HomeTabAdapter;
 import com.zxm.easymqttclient.base.BaseActivity;
-import com.zxm.easymqttclient.fragment.ConnectionFragment;
-import com.zxm.easymqttclient.fragment.PublishFragment;
-import com.zxm.easymqttclient.fragment.SubscribeFragment;
+import com.zxm.easymqttclient.ui.adapter.HomeTabAdapter;
+import com.zxm.easymqttclient.ui.fragment.ConnectionFragment;
+import com.zxm.easymqttclient.ui.fragment.PublishFragment;
+import com.zxm.easymqttclient.ui.fragment.SubscribeFragment;
+import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.DialogUtil;
+import com.zxm.easymqttclient.widget.LogSheetDialog;
 import com.zxm.utils.core.permission.PermissionChecker;
 
 /**
@@ -43,6 +50,26 @@ public class HomeActivity2 extends BaseActivity implements
     private TabLayout mTabLayout;
     private HomeTabAdapter mAdapter;
 
+    private LogSheetDialog mLogDialog;
+
+    //Receive log information.
+    private BroadcastReceiver mLogReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                final String action = intent.getAction();
+                if (!TextUtils.isEmpty(action)
+                        && (Constant.ACTION_LOG_EVENT).equals(action)) {
+                    final String tag = intent.getStringExtra(Constant.EXTRA_TAG);
+                    final String msg = intent.getStringExtra(Constant.EXTRA_MSG);
+                    if (mLogDialog != null) {
+                        mLogDialog.addLogEvent(tag, msg);
+                    }
+                }
+            }
+        }
+    };
+
     @Override
     protected Object setLayout() {
         return R.layout.activity_home2;
@@ -58,6 +85,10 @@ public class HomeActivity2 extends BaseActivity implements
 
         //检查位置权限
         checkPermissions();
+
+        registerLogReceiver();
+
+        mLogDialog = new LogSheetDialog(mContext);
     }
 
     @Override
@@ -70,6 +101,7 @@ public class HomeActivity2 extends BaseActivity implements
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle("MqttClient");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -83,10 +115,20 @@ public class HomeActivity2 extends BaseActivity implements
             @Override
             public void onDrawerClosed(View drawerView) {
                 Toast.makeText(mContext, "关了", Toast.LENGTH_SHORT).show();
-//                mNavigationView.clearFocus();
-//                mNavigationView.setCheckedItem(R.id.navigation_item_devices);
+                /*mNavigationView.clearFocus();
+                mNavigationView.setCheckedItem(R.id.navigation_item_connection);*/
             }
         });
+    }
+
+    //register log event receiver
+    private void registerLogReceiver() {
+        if (mLogReceiver != null) {
+            final IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Constant.ACTION_LOG_EVENT);
+            LocalBroadcastManager.getInstance(mContext)
+                    .registerReceiver(mLogReceiver, intentFilter);
+        }
     }
 
     private void checkPermissions() {
@@ -97,14 +139,20 @@ public class HomeActivity2 extends BaseActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            /*case R.id.menu_scan_start:
-            case R.id.menu_scan_stop:
-                return false;*/
+            case R.id.menu_log:
+                mLogDialog.showLogDialog();
+                return true;
             default:
                 break;
         }
@@ -116,8 +164,7 @@ public class HomeActivity2 extends BaseActivity implements
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
         switch (menuItem.getItemId()) {
-            case R.id.navigation_item_devices_info:
-
+            case R.id.navigation_item_connection:
                 return true;
             case R.id.navigation_item_setting:
                 final Intent setting = new Intent(mContext, SettingActivity.class);
@@ -142,25 +189,6 @@ public class HomeActivity2 extends BaseActivity implements
         startActivity(Intent.createChooser(feedback, "请选择邮箱"));
     }
 
-    public void addTab(@NonNull String deviceName, @NonNull String macAddress) {
-        if (!TextUtils.isEmpty(macAddress)) {
-//            mAdapter.addItem(ConnectionFragment.newInstance(deviceName, macAddress),macAddress);
-            mAdapter.notifyDataSetChanged();
-            mTabLayout.getTabAt(3).select();
-        }
-    }
-
-    public void removeTab() {
-        if (mAdapter != null) {
-            final int size = mAdapter.getCount();
-            if (size == 4) {
-                mAdapter.removeItem(size - 1);
-                mAdapter.notifyDataSetChanged();
-                mTabLayout.getTabAt(0).select();
-            }
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -177,4 +205,11 @@ public class HomeActivity2 extends BaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mLogReceiver != null) {
+            LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mLogReceiver);
+        }
+        super.onDestroy();
+    }
 }

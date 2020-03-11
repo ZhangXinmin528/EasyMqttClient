@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.activity;
+package com.zxm.easymqttclient.ui.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -28,7 +28,7 @@ import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
-import com.zxm.easymqttclient.adapter.MqttLogAdapter;
+import com.zxm.easymqttclient.ui.adapter.MqttLogAdapter;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.model.LogEntity;
 import com.zxm.easymqttclient.util.Constant;

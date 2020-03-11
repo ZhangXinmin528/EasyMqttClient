@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.fragment;
+package com.zxm.easymqttclient.ui.fragment;
 
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -16,6 +16,8 @@ import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseFragment;
+import com.zxm.easymqttclient.util.Constant;
+import com.zxm.easymqttclient.util.DisplayUtil;
 
 import java.util.Objects;
 
@@ -39,8 +41,6 @@ public class ConnectionFragment extends BaseFragment implements
     private TextInputEditText mUserNameEt;
     private TextInputEditText mPwdEt;
 
-    private boolean mIsConnected;
-
     public static ConnectionFragment newInstance() {
         return new ConnectionFragment();
     }
@@ -54,7 +54,6 @@ public class ConnectionFragment extends BaseFragment implements
     public void initParamsAndValues() {
         mIsAutoReconnect = true;
         mIsClearSession = false;
-        mIsConnected = false;
     }
 
     @Override
@@ -86,7 +85,7 @@ public class ConnectionFragment extends BaseFragment implements
         switch (v.getId()) {
             //连接
             case R.id.tv_connect:
-                if (!mIsConnected) {
+                if (!MqttClientManager.getInstance().isConnected()) {
                     buildConnection();
                 } else {
                     disconnect();
@@ -152,14 +151,14 @@ public class ConnectionFragment extends BaseFragment implements
                              public void onSuccess() {
                                  Toast.makeText(mContext, "Mqtt成功建立连接！", Toast.LENGTH_SHORT).show();
                                  MqttDebuger.i(tag, "Mqtt build connection success!");
-//                                 addLogEvent(Constant.TAG_CONNECTION, "Mqtt build connection success!");
+                                 DisplayUtil.sendLogEvent(mContext, Constant.TAG_CONNECTION, "Mqtt build connection success!");
                              }
 
                              @Override
                              public void onFailure(Throwable exception) {
                                  Toast.makeText(mContext, "Mqtt建立连接失败！", Toast.LENGTH_SHORT).show();
                                  MqttDebuger.e(tag, "Mqtt build connection failed!");
-//                                 addLogEvent(Constant.TAG_ERROR, "Mqtt build connection failed!");
+                                 DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR, "Mqtt build connection failed!");
                              }
                          },
                         new SimpleConnectionMqttCallback() {
@@ -168,34 +167,33 @@ public class ConnectionFragment extends BaseFragment implements
                                 super.messageArrived(topic, message, qos);
                                 MqttDebuger.i(tag, "messageArrived~");
                                 MqttDebuger.json(message);
-//                                addLogEvent(Constant.TAG_MESSAGE, "Message of [" + topic + "] has arrived : " + message);
+                                DisplayUtil.sendLogEvent(mContext, Constant.TAG_MESSAGE,
+                                        "Message of [" + topic + "] has arrived : " + message);
                             }
 
                             @Override
                             public void connectionLost(Throwable cause) {
                                 super.connectionLost(cause);
-                                mIsConnected = false;
                                 //切换按钮状态
                                 switchConnectState();
 //                                clearMqttData();
 
                                 if (cause == null) {
                                     MqttDebuger.e(tag, "connectionLost..cause is null~");
-//                                    addLogEvent(Constant.TAG_ERROR,
-//                                    "Mqtt connection to the server is lost, while the cause is unknown!");
+                                    DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR,
+                                            "Mqtt connection to the server is lost, while the cause is unknown!");
                                 } else {
                                     MqttDebuger.e(tag, "connectionLost..cause : " + cause.toString());
-//                                    addLogEvent(Constant.TAG_ERROR,
-//                                    "Mqtt connection to the server is lost, while the cause is " + cause.toString());
+                                    DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR,
+                                            "Mqtt connection to the server is lost, while the cause is " + cause.toString());
                                 }
                             }
 
                             @Override
                             public void connectComplete(boolean reconnect, String serverURI) {
                                 super.connectComplete(reconnect, serverURI);
-//                                addLogEvent(Constant.TAG_CONNECTION, "Mqtt connection to the server is completed successfully," +
-//                                        " while the params reconnect [" + reconnect + "] & serverURI [" + serverURI + "]!");
-                                mIsConnected = true;
+                                DisplayUtil.sendLogEvent(mContext, Constant.TAG_CONNECTION, "Mqtt connection to the server is completed successfully," +
+                                        " while the params reconnect [" + reconnect + "] & serverURI [" + serverURI + "]!");
                                 MqttDebuger.i(tag, "connectComplete..reconnect:" + reconnect);
                                 //TODO：连接成功才能订阅主题
                                 switchConnectState();
@@ -210,9 +208,9 @@ public class ConnectionFragment extends BaseFragment implements
             public void onSuccess() {
                 Toast.makeText(mContext, "成功断开连接！", Toast.LENGTH_SHORT).show();
                 MqttDebuger.i(tag, "disconnect..success~");
-                mIsConnected = false;
                 switchConnectState();
-//                addLogEvent(Constant.TAG_DISCONNECTION, "Mqtt disconnect to the server successfully!");
+                DisplayUtil.sendLogEvent(mContext, Constant.TAG_DISCONNECTION,
+                        "Mqtt disconnect to the server successfully!");
                 clearMqttData();
             }
 
@@ -220,7 +218,8 @@ public class ConnectionFragment extends BaseFragment implements
             public void onFailure(Throwable exception) {
                 Toast.makeText(mContext, "断开连接失败", Toast.LENGTH_SHORT).show();
                 MqttDebuger.e(tag, "disconnect..cause : " + exception.toString());
-//                addLogEvent(Constant.TAG_ERROR, "Mqtt disconnect to the server has failied!");
+                DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR,
+                        "Mqtt disconnect to the server has failied!");
             }
         });
     }
@@ -238,7 +237,7 @@ public class ConnectionFragment extends BaseFragment implements
     }
 
     private void switchConnectState() {
-        if (mIsConnected) {
+        if (MqttClientManager.getInstance().isConnected()) {
             mConnectTv.setText(R.string.all_disconnect);
         } else {
             mConnectTv.setText(R.string.all_connection);
@@ -249,7 +248,7 @@ public class ConnectionFragment extends BaseFragment implements
      * 清除输入框信息
      */
     private void clearMqttData() {
-        if (!mIsConnected) {
+        if (!MqttClientManager.getInstance().isConnected()) {
             mClientIdEt.getEditableText().clear();
             mServerEt.getEditableText().clear();
             mPortEt.getEditableText().clear();

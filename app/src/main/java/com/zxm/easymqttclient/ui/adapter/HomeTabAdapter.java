@@ -1,4 +1,4 @@
-package com.zxm.easymqttclient.adapter;
+package com.zxm.easymqttclient.ui.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
