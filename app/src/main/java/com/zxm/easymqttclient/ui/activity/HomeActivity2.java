@@ -20,8 +20,10 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.ui.adapter.HomeTabAdapter;
@@ -96,6 +98,15 @@ public class HomeActivity2 extends BaseActivity implements
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        final View headerLayout = mNavigationView.getHeaderView(0);
+        if (headerLayout != null) {
+
+            final ImageView header = headerLayout.findViewById(R.id.iv_header);
+            Glide.with(mContext)
+                    .load(R.drawable.icon_default_header)
+                    .into(header);
+        }
 
         final Toolbar toolbar = findViewById(R.id.toolbar_home);
         setSupportActionBar(toolbar);

@@ -18,9 +18,9 @@
         android:id="@+id/layout_setting_app"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:background="@drawable/shape_light_gray"
         android:orientation="vertical"
-        android:layout_margin="12dp"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_setting">
 
         <ImageView
@@ -52,8 +52,8 @@
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-
     <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/layout_personal_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -122,6 +122,79 @@
         <include layout="@layout/layout_horizonal_gray_divider" />
     </android.support.v7.widget.LinearLayoutCompat>
 
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/shape_light_gray"
+        android:orientation="vertical"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/layout_personal_info">
+
+        <include layout="@layout/layout_horizonal_gray_divider" />
+
+        <TextView
+            style="@style/textPaddingStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MQTT信息配置"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
+
+        <include layout="@layout/layout_horizonal_gray_divider" />
+
+        <RelativeLayout
+            android:id="@+id/layout_mqtt_default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/textPaddingStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/all_mqtt_default_configure"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_arrow_right_blue" />
+        </RelativeLayout>
+
+        <include layout="@layout/layout_horizonal_gray_divider" />
+
+        <RelativeLayout
+            android:id="@+id/layout_mqtt_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/textPaddingStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/all_mqtt_user_configure"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_arrow_right_blue" />
+        </RelativeLayout>
+
+        <include layout="@layout/layout_horizonal_gray_divider" />
+    </android.support.v7.widget.LinearLayoutCompat>
 
 
 </android.support.constraint.ConstraintLayout>

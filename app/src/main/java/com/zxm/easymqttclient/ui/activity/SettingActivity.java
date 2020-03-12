@@ -22,9 +22,9 @@ import static android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
 /**
  * Created by ZhangXinmin on 2019/9/12.
  * Copyright (c) 2019 . All rights reserved.
- * 关于
+ * 暂定设置页面
  */
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected Object setLayout() {
@@ -88,6 +88,10 @@ public class SettingActivity extends BaseActivity {
 
         email.setText(emailBuilder);
         email.setMovementMethod(ClickableMovementMethod.getInstance());
+
+        findViewById(R.id.layout_mqtt_default).setOnClickListener(this);
+        findViewById(R.id.layout_mqtt_user).setOnClickListener(this);
+
     }
 
     @Override
@@ -100,4 +104,17 @@ public class SettingActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            //默认配置信息
+            case R.id.layout_mqtt_default:
+                startTargetActivity(MqttDefaultActivity.class);
+                break;
+            //用户信息配置
+            case R.id.layout_mqtt_user:
+
+                break;
+        }
+    }
 }

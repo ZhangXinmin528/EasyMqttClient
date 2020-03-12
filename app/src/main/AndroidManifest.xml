@@ -40,6 +40,8 @@
 
         <!--Setting-->
         <activity android:name=".ui.activity.SettingActivity" />
+        <activity android:name=".ui.activity.MqttDefaultActivity" />
+        <activity android:name=".ui.activity.MqttUserActivity" />
 
         <!--订阅&发布-->
         <service android:name="com.coding.zxm.mqtt_master.service.MqttService" />

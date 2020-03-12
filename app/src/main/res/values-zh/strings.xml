@@ -51,4 +51,5 @@
     <string name="all_app_version">v%1$s</string>
     <string name="all_blog_url">博客地址：</string>
     <string name="all_personal_email">个人邮箱：</string>
+    <string name="all_personal_github">Github：</string>
 </resources>

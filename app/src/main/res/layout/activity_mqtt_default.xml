@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar_default"
+        layout="@layout/layout_toolbar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_default">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--ClearSession-->
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp">
+
+                <RelativeLayout
+                    android:id="@+id/layout_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_session"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/all_clear_session"
+                        android:textColor="@android:color/black" />
+
+                    <CheckBox
+                        android:id="@+id/cb_session"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_toEndOf="@+id/tv_session" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_clear_session_tips"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_session" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/layout_horizonal_gray_divider" />
+
+            <!--AutoReconnect-->
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp">
+
+                <RelativeLayout
+                    android:id="@+id/layout_autoreconnect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_auto_reconnect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/all_auto_reconnect"
+                        android:textColor="@android:color/black" />
+
+                    <CheckBox
+                        android:id="@+id/cb_auto_reconnect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_toEndOf="@+id/tv_auto_reconnect"
+                        android:checked="true" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_tips_clear_auto_reconnect"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_autoreconnect" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/layout_horizonal_gray_divider" />
+
+            <!--Connection timeout-->
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tv_connection_timeout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_connection_timeout"
+                    android:textColor="@color/colorBlack"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_connection_timeout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_connection_timeout">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_connection_timeout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/all_hint_connection_timeout"
+                        android:inputType="text"
+                        android:paddingStart="12dp"
+                        android:textSize="14sp"
+                        tools:ignore="RtlSymmetry" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_tips_clear_auto_reconnect"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_connection_timeout" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/layout_horizonal_gray_divider" />
+
+            <!--Keepalive-->
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tv_keepalive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_keepalive"
+                    android:textColor="@color/colorBlack"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!--Client ID-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_keepalive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_keepalive">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_keepalive"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/all_hint_keepalive"
+                        android:inputType="text"
+                        android:paddingStart="12dp"
+                        android:textSize="14sp"
+                        tools:ignore="RtlSymmetry" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_keepalive_tips"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_keepalive" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/layout_horizonal_gray_divider" />
+
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/selector_operation_btn"
+                android:gravity="center"
+                android:text="@string/all_save"
+                android:textColor="@color/colorWhite" />
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.constraint.ConstraintLayout>

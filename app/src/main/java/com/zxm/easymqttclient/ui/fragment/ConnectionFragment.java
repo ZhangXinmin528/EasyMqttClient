@@ -28,7 +28,6 @@ import java.util.Objects;
  */
 public class ConnectionFragment extends BaseFragment implements
         View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
     //连接
     private TextView mConnectTv;
     private TextView mExpansionTv;

@@ -108,6 +108,8 @@ public class LogSheetDialog extends BottomSheetDialog implements View.OnClickLis
             Toast.makeText(mContext, "暂没有日志信息~", Toast.LENGTH_SHORT).show();
             return;
         }
+        show();
         mAdapter.notifyDataSetChanged();
+
     }
 }

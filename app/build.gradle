@@ -93,6 +93,10 @@ dependencies {
     //腾讯自更新&Buggly
     implementation 'com.tencent.bugly:crashreport_upgrade:1.4.5'
 
+    //glide
+    api "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+
     //使用AAR
 //    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
 //    implementation(name: 'mqtt_service_1.0.2_release', ext: 'aar')

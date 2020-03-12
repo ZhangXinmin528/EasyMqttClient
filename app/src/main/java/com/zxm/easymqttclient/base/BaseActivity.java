@@ -1,8 +1,10 @@
 package com.zxm.easymqttclient.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -60,5 +62,12 @@ public abstract class BaseActivity extends AppCompatActivity {
      * init views for activity
      */
     protected abstract void initViews();
+
+    protected void startTargetActivity(@NonNull Class<? extends BaseActivity> clz) {
+        if (clz == null)
+            return;
+        final Intent intent = new Intent(mContext, clz);
+        startActivity(intent);
+    }
 
 }

@@ -50,5 +50,29 @@
     <string name="all_app_version">v%1$s</string>
     <string name="all_blog_url">Blog：</string>
     <string name="all_personal_email">Email：</string>
-
+    <string name="all_personal_github">Github：</string>
+    <string name="all_save_configure">缓存配置</string>
+    <string name="all_mqtt_default_configure">默认配置</string>
+    <string name="all_mqtt_user_configure">用户配置</string>
+    <string name="all_clear_session_tips">Note:If set to true the client and server will not maintain state across restarts of the client, the server or the connection.Otherwise false.</string>
+    <string name="all_tips_clear_auto_reconnect">Note:If set to true, in the event that the connection is lost, the client will attempt to reconnect to the server.Otherwise false.</string>
+    <string name="all_connection_timeout">Connection Timeout</string>
+    <string name="all_hint_connection_timeout">Input connection timeout value</string>
+    <string name="all_connection_timeout_tips">Nte:This value, measured in seconds, defines the maximum time interval the client will wait for the network connection to the MQTT server to be established.</string>
+    <string name="all_keepalive">Keepalive Interval</string>
+    <string name="all_hint_keepalive">Input keepalive interval value~</string>
+    <string name="all_keepalive_tips">Note:This value, measured in seconds, defines the maximum time interval between messages sent or received.</string>
+    <string name="all_save">保存</string>
+    <string name="all_hint_client_id">Input your client id</string>
+    <string name="all_tips_client_id">Note:The client id must be different with previous id.Which will cause connection lost.</string>
+    <string name="all_hint_mqtt_host">Input your mqtt host</string>
+    <string name="all_tips_mqtt_host">Note:Mqtt host.(e.g. 111.112.130.50)</string>
+    <string name="all_hint_mqtt_port">Input your mqtt port</string>
+    <string name="all_tips_mqtt_port">Note:Mqtt port.(e.g. 8080)</string>
+    <string name="all_tips_topic">Note:The topic that you subscribe or publish to the server.</string>
+    <string name="all_tips_topic">Note:The topic that you subscribe or publish to the server.</string>
+    <string name="all_publish_topic">Publish Topic</string>
+    <string name="all_tips_cache_configure">Note:If set ture, all configurations which listed in the page will be cached.</string>
+    <string name="all_load_cache">Autoloaded</string>
+    <string name="all_tips_locd_cache">Note:If ture, the cache will be loaded before establishing a connection, subscribing to a topic or sending a message.</string>
 </resources>

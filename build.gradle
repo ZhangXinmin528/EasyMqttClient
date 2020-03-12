@@ -46,4 +46,7 @@ ext {
     utilVersion = '1.0.4'
 
     recyclerAdapterVersion = "2.9.40"
+
+    //glide
+    glideVersion = '4.9.0'
 }

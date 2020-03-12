@@ -1,111 +1,102 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?><!--订阅主题-->
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/shape_white_bg"
+    android:focusable="true"
+    android:orientation="vertical">
 
-    <!--订阅主题-->
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/shape_white_bg"
-        android:focusable="true"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="6dp">
 
-        <RelativeLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:layout_centerVertical="true"
+            android:text="@string/all_subscribe_topic"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/all_subscribe_topic"
-                android:textColor="@color/colorBlack"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_subscribe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:drawableEnd="@drawable/icon_arrow_right_blue"
-                android:gravity="center_vertical"
-                android:text="@string/all_subscribe"
-                android:textColor="@color/colorPrimary" />
-
-        </RelativeLayout>
-
-        <include layout="@layout/layout_divider_gray" />
-
-        <!--topic-->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_subscribe"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp">
+            android:layout_alignParentEnd="true"
+            android:drawableEnd="@drawable/icon_arrow_right_blue"
+            android:gravity="center_vertical"
+            android:text="@string/all_subscribe"
+            android:textColor="@color/colorPrimary" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/et_subscribe_topic"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/all_topic"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText,RtlSymmetry" />
+    </RelativeLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <include layout="@layout/layout_divider_gray" />
 
-        <RadioGroup
-            android:id="@+id/rg_subscribe"
+    <!--topic-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_subscribe_topic"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/all_topic"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText,RtlSymmetry" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/rg_subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:text="@string/all_qos"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/all_qos"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
+        <RadioButton
+            android:id="@+id/rb_sub_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:checked="false"
+            android:text="0"
+            tools:ignore="HardcodedText" />
 
-            <RadioButton
-                android:id="@+id/rb_sub_0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:checked="false"
-                android:text="0"
-                tools:ignore="HardcodedText" />
+        <RadioButton
+            android:id="@+id/rb_sub_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-            <RadioButton
-                android:id="@+id/rb_sub_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="1"
+            tools:ignore="HardcodedText" />
 
-                android:checked="true"
-                android:text="1"
-                tools:ignore="HardcodedText" />
+        <RadioButton
+            android:id="@+id/rb_sub_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="2"
+            tools:ignore="HardcodedText" />
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/rb_sub_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="2"
-                tools:ignore="HardcodedText" />
-        </RadioGroup>
-
-    </android.support.v7.widget.LinearLayoutCompat>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.LinearLayoutCompat>
