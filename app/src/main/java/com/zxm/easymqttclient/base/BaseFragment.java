@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 public abstract class BaseFragment extends Fragment {
 
     protected Context mContext;
-    protected String tag = "BaseFragment";
+    protected String tag = this.getClass().getSimpleName();
 
     @Override
     public void onAttach(Context context) {

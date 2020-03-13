@@ -20,56 +20,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--ClientId-->
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingTop="6dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="6dp">
-
-                <TextView
-                    android:id="@+id/tv_mqtt_client_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/all_input_client_id"
-                    android:textColor="@color/colorBlack"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!--Client ID-->
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/layout_mqtt_client_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_mqtt_client_id">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/et_mqtt_client_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/all_hint_client_id"
-                        android:inputType="text"
-                        android:paddingStart="12dp"
-                        android:textSize="14sp"
-                        tools:ignore="RtlSymmetry" />
-                </android.support.design.widget.TextInputLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/all_tips_client_id"
-                    android:textSize="12sp"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_mqtt_client_id" />
-            </android.support.constraint.ConstraintLayout>
-
-            <include layout="@layout/layout_horizonal_gray_divider" />
-
             <!--Host-->
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="10dp"
@@ -115,6 +70,7 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="10dp"
@@ -160,6 +116,7 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="10dp"
@@ -205,6 +162,7 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="10dp"
@@ -277,51 +235,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp"
                 android:text="@string/all_tips_cache_configure"
                 android:textSize="12sp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="6dp"
-                app:layout_constraintTop_toBottomOf="@+id/layout_mqtt_publish_topic" />
-
-            <include layout="@layout/layout_horizonal_gray_divider" />
-
-            <!--自动加载-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingTop="6dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="6dp">
-
-                <TextView
-                    android:id="@+id/tv_mqtt_load_cache"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/all_load_cache"
-                    android:textColor="@color/colorBlack"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/sw_load_cache"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:checked="false" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/all_tips_locd_cache"
-                android:textSize="12sp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="6dp"
                 app:layout_constraintTop_toBottomOf="@+id/layout_mqtt_publish_topic" />
 
             <include layout="@layout/layout_horizonal_gray_divider" />

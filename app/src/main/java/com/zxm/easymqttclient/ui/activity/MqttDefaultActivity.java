@@ -79,6 +79,7 @@ public class MqttDefaultActivity extends BaseActivity implements
         }
     }
 
+    //影响的是连接页面
     private void saveConfigure() {
         SPUtils.setClearSession(mContext, mIsClearSession);
         SPUtils.setAutoReconnect(mContext, mIsAutoReconnect);
@@ -102,6 +103,7 @@ public class MqttDefaultActivity extends BaseActivity implements
             }
             SPUtils.setKeepaliveInterval(mContext, interval);
         }
+        Toast.makeText(mContext, "Mqtt默认配置保存成功~", Toast.LENGTH_SHORT).show();
     }
 
     @Override

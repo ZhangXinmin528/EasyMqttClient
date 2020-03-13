@@ -171,7 +171,7 @@ public final class MqttConfig {
          * @see MqttConnectOptions#setConnectionTimeout(int)
          */
         public Builder setTimeout(@IntRange(from = 0) int timeout) {
-            P.mTimeout = timeout;
+            P.mConnectionTimeout = timeout;
             return this;
         }
 
@@ -212,7 +212,7 @@ public final class MqttConfig {
             mConnectOptions = new MqttConnectOptions();
 
             mConnectOptions.setCleanSession(P.mCleanSession);
-            mConnectOptions.setConnectionTimeout(P.mTimeout);
+            mConnectOptions.setConnectionTimeout(P.mConnectionTimeout);
             //Sets the "keep alive" interval.
             mConnectOptions.setKeepAliveInterval(P.mKeepalive);
             mConnectOptions.setAutomaticReconnect(P.mReconnect);
@@ -261,7 +261,7 @@ public final class MqttConfig {
                         "CleanSession : " + P.mCleanSession,
                         "Keepalive : " + P.mKeepalive,
                         "Reconnect : " + P.mReconnect,
-                        "Timeout : " + P.mTimeout);
+                        "Timeout : " + P.mConnectionTimeout);
             }
 
             if (mMqttAndroidClient != null) {
@@ -290,7 +290,7 @@ public final class MqttConfig {
         //whether the client and server should remember state across restarts and reconnects
         private boolean mCleanSession;
         //connection timeout value
-        private int mTimeout;
+        private int mConnectionTimeout;
         //"keep alive" interval
         private int mKeepalive;
         private boolean mReconnect;
@@ -300,7 +300,7 @@ public final class MqttConfig {
 
         public ConfigParams(Context context) {
             this.mContext = context;
-            mTimeout = defaultTimeOut;
+            mConnectionTimeout = defaultTimeOut;
             mKeepalive = defaultKeepAlive;
         }
 
@@ -314,7 +314,7 @@ public final class MqttConfig {
                     ", mUserName='" + mUserName + '\'' +
                     ", mPassWord='" + mPassWord + '\'' +
                     ", mCleanSession=" + mCleanSession +
-                    ", mTimeout=" + mTimeout +
+                    ", mTimeout=" + mConnectionTimeout +
                     ", mKeepalive=" + mKeepalive +
                     ", mReconnect=" + mReconnect +
                     ", mTraceEnable=" + mTraceEnable +

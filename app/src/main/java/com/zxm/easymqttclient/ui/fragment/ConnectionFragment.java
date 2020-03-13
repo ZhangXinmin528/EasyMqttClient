@@ -18,6 +18,7 @@ import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseFragment;
 import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.DisplayUtil;
+import com.zxm.easymqttclient.util.SPUtils;
 
 import java.util.Objects;
 
@@ -36,9 +37,13 @@ public class ConnectionFragment extends BaseFragment implements
     private TextInputEditText mPortEt;
     private boolean mIsClearSession;
     private boolean mIsAutoReconnect;
+    private int mKeepaliveInterval;
     private LinearLayoutCompat mExpansionLayout;
     private TextInputEditText mUserNameEt;
     private TextInputEditText mPwdEt;
+
+    //能否缓存
+    private boolean mCacheEnable;
 
     public static ConnectionFragment newInstance() {
         return new ConnectionFragment();
@@ -51,12 +56,16 @@ public class ConnectionFragment extends BaseFragment implements
 
     @Override
     public void initParamsAndValues() {
+        mCacheEnable = SPUtils.getCacheState(mContext);
         mIsAutoReconnect = true;
         mIsClearSession = false;
+
+        mKeepaliveInterval = 60;
     }
 
     @Override
     protected void initViews(View rootView) {
+
         //0.连接
         mConnectTv = rootView.findViewById(R.id.tv_connect);
         mConnectTv.setOnClickListener(this);
@@ -67,16 +76,38 @@ public class ConnectionFragment extends BaseFragment implements
         mExpansionLayout = rootView.findViewById(R.id.layout_home_connection_expansion);
         mExpansionLayout.setVisibility(View.GONE);
 
+        //ClientId
         mClientIdEt = rootView.findViewById(R.id.et_client_id);
+
+        //Host
         mServerEt = rootView.findViewById(R.id.et_server);
+        final String host = SPUtils.getMqttHost(mContext);
+        if (!TextUtils.isEmpty(host) && mIsAutoloadingCache) {
+            mServerEt.setText(host);
+        }
+
+        //Port
         mPortEt = rootView.findViewById(R.id.et_port);
+        final String port = SPUtils.getMqttPort(mContext);
+        if (!TextUtils.isEmpty(port) && mIsAutoloadingCache) {
+            mPortEt.setText(port);
+        }
+
         mUserNameEt = rootView.findViewById(R.id.et_username);
+
         mPwdEt = rootView.findViewById(R.id.et_password);
 
         final CheckBox sessionCb = rootView.findViewById(R.id.cb_session);
         sessionCb.setOnCheckedChangeListener(this);
+        if (mIsAutoloadingCache) {
+            sessionCb.setChecked(mIsClearSession);
+        }
+
         final CheckBox autoReconnectCb = rootView.findViewById(R.id.cb_auto_reconnect);
         autoReconnectCb.setOnCheckedChangeListener(this);
+        if (mIsAutoloadingCache) {
+            autoReconnectCb.setChecked(mIsAutoReconnect);
+        }
     }
 
     @Override
@@ -129,7 +160,7 @@ public class ConnectionFragment extends BaseFragment implements
                 .setPort(port)
                 .setAutomaticReconnect(mIsAutoReconnect)
                 .setCleanSession(mIsClearSession)
-                .setKeepalive(20);
+                .setKeepalive(mKeepaliveInterval);
 
         if (!TextUtils.isEmpty(userName)) {
             builder.setUserName(userName);
@@ -196,6 +227,8 @@ public class ConnectionFragment extends BaseFragment implements
                                 MqttDebuger.i(tag, "connectComplete..reconnect:" + reconnect);
                                 //TODO：连接成功才能订阅主题
                                 switchConnectState();
+                                //缓存用户配置
+                                saveUserConfigure();
                             }
                         });
     }
@@ -240,6 +273,23 @@ public class ConnectionFragment extends BaseFragment implements
             mConnectTv.setText(R.string.all_disconnect);
         } else {
             mConnectTv.setText(R.string.all_connection);
+        }
+    }
+
+    /**
+     * 保存用户信息
+     */
+    private void saveUserConfigure() {
+        if (mCacheEnable) {
+            final String host = mServerEt.getEditableText().toString().trim();
+            if (!TextUtils.isEmpty(host)) {
+                SPUtils.setMqttHost(mContext, host);
+            }
+
+            final String port = mPortEt.getEditableText().toString().trim();
+            if (!TextUtils.isEmpty(port)) {
+                SPUtils.setMqttPort(mContext, port);
+            }
         }
     }
 

@@ -16,6 +16,7 @@ import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseFragment;
 import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.DisplayUtil;
+import com.zxm.easymqttclient.util.SPUtils;
 
 /**
  * Created by ZhangXinmin on 2020/3/11.
@@ -30,6 +31,8 @@ public class PublishFragment extends BaseFragment implements
     private TextInputEditText mMessageEt;
     private int mPubQos;
     private boolean mIsRetained;
+    //能否缓存
+    private boolean mCacheEnable;
 
     public static PublishFragment newInstance() {
         return new PublishFragment();
@@ -42,13 +45,18 @@ public class PublishFragment extends BaseFragment implements
 
     @Override
     public void initParamsAndValues() {
-
+        mCacheEnable = SPUtils.getCacheState(mContext);
     }
 
     @Override
     protected void initViews(View rootView) {
         //2.发布
         mPublishTopicEt = rootView.findViewById(R.id.et_publish_topic);
+        final String publishTopic = SPUtils.getMqttPublishTopic(mContext);
+        if (!TextUtils.isEmpty(publishTopic) && mIsAutoloadingCache) {
+            mPublishTopicEt.setText(publishTopic);
+        }
+
         mMessageEt = rootView.findViewById(R.id.et_publish_message);
         RadioGroup rg_publish = rootView.findViewById(R.id.rg_publish);
         rg_publish.setOnCheckedChangeListener((group, checkedId) -> {
@@ -58,6 +66,7 @@ public class PublishFragment extends BaseFragment implements
         });
 
         final CheckBox remainCb = rootView.findViewById(R.id.cb_retained);
+
         remainCb.setOnCheckedChangeListener(this);
         rootView.findViewById(R.id.tv_publish).setOnClickListener(this);
     }
@@ -98,6 +107,7 @@ public class PublishFragment extends BaseFragment implements
                         MqttDebuger.i(tag, "publishMessage..message [: " + msg + "]..success!");
                         DisplayUtil.sendLogEvent(mContext, Constant.TAG_PUBLISHING,
                                 "Mqtt publish the message [" + msg + "] successfully!");
+                        saveUserConfigure();
                     }
 
                     @Override
@@ -117,6 +127,15 @@ public class PublishFragment extends BaseFragment implements
             case R.id.cb_retained:
                 mIsRetained = isChecked;
                 break;
+        }
+    }
+
+    private void saveUserConfigure() {
+        if (mCacheEnable) {
+            final String publishTopic = mPublishTopicEt.getEditableText().toString().trim();
+            if (!TextUtils.isEmpty(publishTopic)) {
+                SPUtils.setMqttPublishTopic(mContext, publishTopic);
+            }
         }
     }
 }

@@ -113,7 +113,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 break;
             //用户信息配置
             case R.id.layout_mqtt_user:
-
+                startTargetActivity(MqttUserActivity.class);
                 break;
         }
     }

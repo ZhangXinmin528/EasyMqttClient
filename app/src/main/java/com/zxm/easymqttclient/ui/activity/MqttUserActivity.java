@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
@@ -21,14 +22,12 @@ import com.zxm.easymqttclient.util.SPUtils;
 public class MqttUserActivity extends BaseActivity implements
         View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private TextInputEditText mClientIdEt;
     private TextInputEditText mHostEt;
     private TextInputEditText mPortEt;
     private TextInputEditText mSubscribeTopicEt;
     private TextInputEditText mPublishTopicEt;
 
     private boolean mIsCacheEnable;
-    private boolean mIsAutoloadingEnable;
 
     @Override
     protected Object setLayout() {
@@ -38,7 +37,6 @@ public class MqttUserActivity extends BaseActivity implements
     @Override
     protected void initParamsAndViews() {
         mIsCacheEnable = false;
-        mIsAutoloadingEnable = false;
     }
 
     @Override
@@ -51,30 +49,24 @@ public class MqttUserActivity extends BaseActivity implements
             actionBar.setTitle("Mqtt用户配置");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        mClientIdEt = findViewById(R.id.et_mqtt_client_id);
-        final String id = SPUtils.getMqttClientId(mContext);
-        if (!TextUtils.isEmpty(id)){
-            mClientIdEt.setText(id);
-        }
         mHostEt = findViewById(R.id.et_mqtt_host);
         final String host = SPUtils.getMqttHost(mContext);
-        if (!TextUtils.isEmpty(host)){
+        if (!TextUtils.isEmpty(host)) {
             mHostEt.setText(host);
         }
         mPortEt = findViewById(R.id.et_mqtt_port);
         final String port = SPUtils.getMqttPort(mContext);
-        if (!TextUtils.isEmpty(port)){
+        if (!TextUtils.isEmpty(port)) {
             mPortEt.setText(port);
         }
         mSubscribeTopicEt = findViewById(R.id.et_mqtt_subscribe_topic);
         final String subTopic = SPUtils.getMqttSubscribeTopic(mContext);
-        if (!TextUtils.isEmpty(subTopic)){
+        if (!TextUtils.isEmpty(subTopic)) {
             mSubscribeTopicEt.setText(subTopic);
         }
         mPublishTopicEt = findViewById(R.id.et_mqtt_publish_topic);
         final String publishTopic = SPUtils.getMqttPublishTopic(mContext);
-        if (!TextUtils.isEmpty(publishTopic)){
+        if (!TextUtils.isEmpty(publishTopic)) {
             mPublishTopicEt.setText(publishTopic);
         }
 
@@ -82,9 +74,6 @@ public class MqttUserActivity extends BaseActivity implements
         cache.setOnCheckedChangeListener(this);
         cache.setChecked(SPUtils.getCacheState(mContext));
 
-        final SwitchCompat locadCache = findViewById(R.id.sw_load_cache);
-        locadCache.setOnCheckedChangeListener(this);
-        locadCache.setChecked(SPUtils.getAutoloadingCache(mContext));
 
         findViewById(R.id.tv_save).setOnClickListener(this);
     }
@@ -94,9 +83,6 @@ public class MqttUserActivity extends BaseActivity implements
         switch (buttonView.getId()) {
             case R.id.sw_cache:
                 mIsCacheEnable = isChecked;
-                break;
-            case R.id.sw_load_cache:
-                mIsAutoloadingEnable = false;
                 break;
         }
     }
@@ -112,12 +98,6 @@ public class MqttUserActivity extends BaseActivity implements
 
     private void saveConfigure() {
         SPUtils.setCacheState(mContext, mIsCacheEnable);
-        SPUtils.setAutoloadingCache(mContext, mIsAutoloadingEnable);
-
-        final String clientId = mClientIdEt.getEditableText().toString().trim();
-        if (!TextUtils.isEmpty(clientId)) {
-            SPUtils.setMqttClientId(mContext, clientId);
-        }
 
         final String host = mHostEt.getEditableText().toString().trim();
         if (!TextUtils.isEmpty(host)) {
@@ -138,6 +118,8 @@ public class MqttUserActivity extends BaseActivity implements
         if (!TextUtils.isEmpty(publishTopic)) {
             SPUtils.setMqttPublishTopic(mContext, publishTopic);
         }
+
+        Toast.makeText(mContext, "Mqtt用户配置保存成功~", Toast.LENGTH_SHORT).show();
     }
 
     @Override

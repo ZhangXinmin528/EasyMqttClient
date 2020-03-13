@@ -40,16 +40,6 @@ public final class SPUtils {
     public static final String SP_CACHE_CONFIGURE = "sp_cache_configure";
 
     /**
-     * 自动加载缓存
-     */
-    public static final String SP_AUTOLOADING_CACHE = "sp_autoloading_cache";
-
-    /**
-     * Mqtt Client id
-     */
-    public static final String SP_MQTT_CLIENT_ID = "sp_mqtt_client_id";
-
-    /**
      * Mqtt host
      */
     public static final String SP_MQTT_HOST = "sp_mqtt_host";
@@ -160,6 +150,7 @@ public final class SPUtils {
     }
 
     //用户信息配置
+
     /**
      * 保存Mqtt信息缓存状态
      *
@@ -178,48 +169,6 @@ public final class SPUtils {
      */
     public static boolean getCacheState(@NonNull Context context) {
         return (boolean) SharedPreferencesUtil.get(context, SP_CACHE_CONFIGURE, false);
-    }
-
-    /**
-     * 保存是否自动加载缓存信息
-     *
-     * @param context
-     * @param state
-     */
-    public static void setAutoloadingCache(@NonNull Context context, boolean state) {
-        SharedPreferencesUtil.put(context, SP_AUTOLOADING_CACHE, state);
-    }
-
-    /**
-     * 获取是否自动加载缓存信息
-     *
-     * @param context
-     * @return
-     */
-    public static boolean getAutoloadingCache(@NonNull Context context) {
-        return (boolean) SharedPreferencesUtil.get(context, SP_AUTOLOADING_CACHE, false);
-    }
-
-    /**
-     * 设置ClientID
-     *
-     * @param context
-     * @param id
-     */
-    public static void setMqttClientId(@NonNull Context context, @NonNull String id) {
-        if (!TextUtils.isEmpty(id)) {
-            SharedPreferencesUtil.put(context, SP_MQTT_CLIENT_ID, id);
-        }
-    }
-
-    /**
-     * 获取ClientId
-     *
-     * @param context
-     * @return
-     */
-    public static String getMqttClientId(@NonNull Context context) {
-        return (String) SharedPreferencesUtil.get(context, SP_MQTT_CLIENT_ID, "");
     }
 
     /**
@@ -272,6 +221,7 @@ public final class SPUtils {
      * @param context
      * @param username
      */
+    @Deprecated
     public static void setMqttUserName(@NonNull Context context, @NonNull String username) {
         if (!TextUtils.isEmpty(username)) {
             SharedPreferencesUtil.put(context, SP_MQTT_USER_NAME, username);
@@ -284,6 +234,7 @@ public final class SPUtils {
      * @param context
      * @return
      */
+    @Deprecated
     public static String getMqttUserName(@NonNull Context context) {
         return (String) SharedPreferencesUtil.get(context, SP_MQTT_USER_NAME, "");
     }
@@ -294,6 +245,7 @@ public final class SPUtils {
      * @param context
      * @param pwd
      */
+    @Deprecated
     public static void setMqttPwd(@NonNull Context context, @NonNull String pwd) {
         if (!TextUtils.isEmpty(pwd)) {
             SharedPreferencesUtil.put(context, SP_MQTT_PWD, pwd);
@@ -306,6 +258,7 @@ public final class SPUtils {
      * @param context
      * @return
      */
+    @Deprecated
     public static String getMqttPwd(@NonNull Context context) {
         return (String) SharedPreferencesUtil.get(context, SP_MQTT_PWD, "");
     }

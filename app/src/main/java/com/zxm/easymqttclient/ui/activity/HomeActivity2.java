@@ -50,6 +50,7 @@ public class HomeActivity2 extends BaseActivity implements
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private TabLayout mTabLayout;
+    private int mSelectedIndex;
     private HomeTabAdapter mAdapter;
 
     private LogSheetDialog mLogDialog;
@@ -79,6 +80,7 @@ public class HomeActivity2 extends BaseActivity implements
 
     @Override
     protected void initParamsAndViews() {
+        mSelectedIndex = 0;
         mAdapter = new HomeTabAdapter(getSupportFragmentManager());
 
         mAdapter.addItem("Connect", ConnectionFragment.newInstance());
@@ -98,6 +100,7 @@ public class HomeActivity2 extends BaseActivity implements
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setCheckedItem(R.id.navigation_item_connection);
 
         final View headerLayout = mNavigationView.getHeaderView(0);
         if (headerLayout != null) {
@@ -122,14 +125,30 @@ public class HomeActivity2 extends BaseActivity implements
         mTabLayout = findViewById(R.id.tablayout_home);
         mTabLayout.setupWithViewPager(viewPager);
 
+        mTabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mSelectedIndex = tab.getPosition();
+                Toast.makeText(mContext, "选择了： " + mSelectedIndex, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
-                Toast.makeText(mContext, "关了", Toast.LENGTH_SHORT).show();
-                /*mNavigationView.clearFocus();
-                mNavigationView.setCheckedItem(R.id.navigation_item_connection);*/
+                mNavigationView.clearFocus();
+                mNavigationView.setCheckedItem(R.id.navigation_item_connection);
             }
         });
+
     }
 
     //register log event receiver

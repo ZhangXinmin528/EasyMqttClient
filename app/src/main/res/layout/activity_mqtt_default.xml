@@ -112,6 +112,7 @@
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="10dp"
+                android:focusable="true"
                 android:paddingBottom="6dp">
 
                 <TextView
@@ -156,6 +157,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="10dp"
                 android:paddingTop="6dp"
+                android:focusable="true"
                 android:paddingEnd="10dp"
                 android:paddingBottom="6dp">
 
