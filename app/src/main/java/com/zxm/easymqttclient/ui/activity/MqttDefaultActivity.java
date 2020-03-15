@@ -75,6 +75,7 @@ public class MqttDefaultActivity extends BaseActivity implements
         switch (v.getId()) {
             case R.id.tv_save:
                 saveConfigure();
+                finish();
                 break;
         }
     }

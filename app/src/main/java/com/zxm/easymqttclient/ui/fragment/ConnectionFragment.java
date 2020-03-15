@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,21 +30,31 @@ import java.util.Objects;
  */
 public class ConnectionFragment extends BaseFragment implements
         View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
     //连接
     private TextView mConnectTv;
     private TextView mExpansionTv;
     private TextInputEditText mClientIdEt;
     private TextInputEditText mServerEt;
     private TextInputEditText mPortEt;
-    private boolean mIsClearSession;
-    private boolean mIsAutoReconnect;
-    private int mKeepaliveInterval;
     private LinearLayoutCompat mExpansionLayout;
     private TextInputEditText mUserNameEt;
     private TextInputEditText mPwdEt;
+    private CheckBox mSessionCb;
+    private CheckBox mAutoReconnectCb;
+
+    private ScrollView mConfigureLayout;
+    private TextView mContentTv;
+
 
     //能否缓存
     private boolean mCacheEnable;
+
+    private boolean mIsClearSession;
+    private boolean mIsAutoReconnect;
+    private int mKeepaliveInterval;
+    private int mConnectionTimeout;
+
 
     public static ConnectionFragment newInstance() {
         return new ConnectionFragment();
@@ -57,10 +68,12 @@ public class ConnectionFragment extends BaseFragment implements
     @Override
     public void initParamsAndValues() {
         mCacheEnable = SPUtils.getCacheState(mContext);
+
         mIsAutoReconnect = true;
         mIsClearSession = false;
 
-        mKeepaliveInterval = 60;
+        mKeepaliveInterval = SPUtils.getKeepaliveInterval(mContext);
+        mConnectionTimeout = SPUtils.getConnectionTimeout(mContext);
     }
 
     @Override
@@ -81,33 +94,30 @@ public class ConnectionFragment extends BaseFragment implements
 
         //Host
         mServerEt = rootView.findViewById(R.id.et_server);
-        final String host = SPUtils.getMqttHost(mContext);
-        if (!TextUtils.isEmpty(host) && mIsAutoloadingCache) {
-            mServerEt.setText(host);
-        }
+
 
         //Port
         mPortEt = rootView.findViewById(R.id.et_port);
-        final String port = SPUtils.getMqttPort(mContext);
-        if (!TextUtils.isEmpty(port) && mIsAutoloadingCache) {
-            mPortEt.setText(port);
-        }
+
 
         mUserNameEt = rootView.findViewById(R.id.et_username);
 
         mPwdEt = rootView.findViewById(R.id.et_password);
 
-        final CheckBox sessionCb = rootView.findViewById(R.id.cb_session);
-        sessionCb.setOnCheckedChangeListener(this);
-        if (mIsAutoloadingCache) {
-            sessionCb.setChecked(mIsClearSession);
-        }
+        mSessionCb = rootView.findViewById(R.id.cb_session);
+        mSessionCb.setOnCheckedChangeListener(this);
 
-        final CheckBox autoReconnectCb = rootView.findViewById(R.id.cb_auto_reconnect);
-        autoReconnectCb.setOnCheckedChangeListener(this);
-        if (mIsAutoloadingCache) {
-            autoReconnectCb.setChecked(mIsAutoReconnect);
-        }
+
+        mAutoReconnectCb = rootView.findViewById(R.id.cb_auto_reconnect);
+        mAutoReconnectCb.setOnCheckedChangeListener(this);
+
+        //是否加载缓存
+        final CheckBox loadCacheCb = rootView.findViewById(R.id.cb_load_cache);
+        loadCacheCb.setOnCheckedChangeListener(this);
+
+        mConfigureLayout = rootView.findViewById(R.id.layout_configure);
+        mContentTv = rootView.findViewById(R.id.tv_configure);
+
     }
 
     @Override
@@ -160,6 +170,7 @@ public class ConnectionFragment extends BaseFragment implements
                 .setPort(port)
                 .setAutomaticReconnect(mIsAutoReconnect)
                 .setCleanSession(mIsClearSession)
+                .setConnectionTimeout(mConnectionTimeout)
                 .setKeepalive(mKeepaliveInterval);
 
         if (!TextUtils.isEmpty(userName)) {
@@ -217,6 +228,7 @@ public class ConnectionFragment extends BaseFragment implements
                                     DisplayUtil.sendLogEvent(mContext, Constant.TAG_ERROR,
                                             "Mqtt connection to the server is lost, while the cause is " + cause.toString());
                                 }
+                                showMqttConfigure(false);
                             }
 
                             @Override
@@ -229,6 +241,7 @@ public class ConnectionFragment extends BaseFragment implements
                                 switchConnectState();
                                 //缓存用户配置
                                 saveUserConfigure();
+                                showMqttConfigure(true);
                             }
                         });
     }
@@ -243,7 +256,8 @@ public class ConnectionFragment extends BaseFragment implements
                 switchConnectState();
                 DisplayUtil.sendLogEvent(mContext, Constant.TAG_DISCONNECTION,
                         "Mqtt disconnect to the server successfully!");
-                clearMqttData();
+                clearInputData();
+                showMqttConfigure(false);
             }
 
             @Override
@@ -256,6 +270,26 @@ public class ConnectionFragment extends BaseFragment implements
         });
     }
 
+    /**
+     * 展示连接信息
+     *
+     * @param showEnable
+     */
+    private void showMqttConfigure(boolean showEnable) {
+        final String configure = MqttClientManager.getInstance().outMqttConfigure();
+        if (showEnable) {
+            if (!TextUtils.isEmpty(configure)) {
+                mConfigureLayout.setVisibility(View.VISIBLE);
+                mContentTv.setText(configure);
+            } else {
+                mConfigureLayout.setVisibility(View.GONE);
+            }
+        } else {
+            mConfigureLayout.setVisibility(View.GONE);
+        }
+
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
@@ -265,6 +299,34 @@ public class ConnectionFragment extends BaseFragment implements
             case R.id.cb_auto_reconnect:
                 mIsAutoReconnect = isChecked;
                 break;
+            //加载缓存
+            case R.id.cb_load_cache:
+                loadCache(isChecked);
+                break;
+        }
+    }
+
+    //加载缓存
+    private void loadCache(boolean isChecked) {
+        if (isChecked) {
+            final String host = SPUtils.getMqttHost(mContext);
+            if (!TextUtils.isEmpty(host)) {
+                mServerEt.setText(host);
+            }
+
+            final String port = SPUtils.getMqttPort(mContext);
+            if (!TextUtils.isEmpty(port)) {
+                mPortEt.setText(port);
+            }
+
+            mSessionCb.setChecked(SPUtils.getClearSession(mContext));
+            mAutoReconnectCb.setChecked(SPUtils.getAutoReconnect(mContext));
+
+
+        } else {
+            clearInputData();
+            mSessionCb.setChecked(false);
+            mAutoReconnectCb.setChecked(true);
         }
     }
 
@@ -296,7 +358,7 @@ public class ConnectionFragment extends BaseFragment implements
     /**
      * 清除输入框信息
      */
-    private void clearMqttData() {
+    private void clearInputData() {
         if (!MqttClientManager.getInstance().isConnected()) {
             mClientIdEt.getEditableText().clear();
             mServerEt.getEditableText().clear();

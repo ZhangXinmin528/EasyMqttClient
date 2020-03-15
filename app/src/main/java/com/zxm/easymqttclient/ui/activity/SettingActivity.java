@@ -43,7 +43,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("关于");
+            actionBar.setTitle(R.string.all_setting);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 

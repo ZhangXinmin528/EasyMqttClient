@@ -48,6 +48,7 @@
     <string name="rationale_storage">禁用存储空间权限，将不能使用文件的读写或删除功能~</string>
 
     <!--Setting-->
+    <string name="all_setting">设置</string>
     <string name="all_app_version">v%1$s</string>
     <string name="all_blog_url">博客地址：</string>
     <string name="all_personal_email">个人邮箱：</string>
@@ -73,4 +74,6 @@
     <string name="all_tips_topic">注意:您订阅或发布到服务器的主题。</string>
     <string name="all_publish_topic">Publish Topic</string>
     <string name="all_tips_cache_configure">注意:如果设置为true，则将在建立连接之后，订阅主题之后或者发布消息之后缓存页面中所列出的所有配置。</string>
+    <string name="all_load_cache">加载缓存</string>
+    <string name="all_title_mqtt_info">MQTT信息配置</string>
 </resources>

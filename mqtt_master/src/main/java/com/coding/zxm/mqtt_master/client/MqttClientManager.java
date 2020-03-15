@@ -55,6 +55,18 @@ public final class MqttClientManager {
     }
 
     /**
+     * Use this method after configuring add the mqtt configs.
+     *
+     * @return
+     */
+    public String outMqttConfigure() {
+        if (mqttConfig != null) {
+            return mqttConfig.getConfigParams();
+        } else return "";
+    }
+
+
+    /**
      * init MqttClient
      * <p>
      * You must init mqtt config before connected.

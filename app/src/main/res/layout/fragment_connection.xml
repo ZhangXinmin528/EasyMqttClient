@@ -206,4 +206,21 @@
             android:text="@string/all_load_cache"
             android:textColor="@android:color/black" />
     </android.support.v7.widget.LinearLayoutCompat>
+
+    <!--连接信息-->
+    <ScrollView
+        android:id="@+id/layout_configure"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/shape_loading_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_configure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="12sp"
+            tools:text="Configure:" />
+    </ScrollView>
 </android.support.v7.widget.LinearLayoutCompat>

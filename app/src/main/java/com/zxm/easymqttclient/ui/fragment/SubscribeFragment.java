@@ -3,6 +3,8 @@ package com.zxm.easymqttclient.ui.fragment;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -21,7 +23,7 @@ import com.zxm.easymqttclient.util.SPUtils;
  * Copyright (c) 2020 . All rights reserved.
  * Subscribing a topic~
  */
-public class SubscribeFragment extends BaseFragment implements View.OnClickListener {
+public class SubscribeFragment extends BaseFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     //订阅主题
     private TextInputEditText mSubscribeTopicEt;
@@ -49,11 +51,6 @@ public class SubscribeFragment extends BaseFragment implements View.OnClickListe
         //1.订阅主题
         mSubscribeTopicEt = rootView.findViewById(R.id.et_subscribe_topic);
 
-        final String subTopic = SPUtils.getMqttSubscribeTopic(mContext);
-        if (!TextUtils.isEmpty(subTopic) && mIsAutoloadingCache) {
-            mSubscribeTopicEt.setText(subTopic);
-        }
-
         RadioGroup rg = rootView.findViewById(R.id.rg_subscribe);
         rg.setOnCheckedChangeListener((group, checkedId) -> {
             final RadioButton rb = group.findViewById(checkedId);
@@ -62,6 +59,11 @@ public class SubscribeFragment extends BaseFragment implements View.OnClickListe
         });
         //订阅
         rootView.findViewById(R.id.tv_subscribe).setOnClickListener(this);
+
+        //是否加载缓存
+        final CheckBox loadCacheCb = rootView.findViewById(R.id.cb_load_cache);
+        loadCacheCb.setOnCheckedChangeListener(this);
+
     }
 
     @Override
@@ -111,6 +113,26 @@ public class SubscribeFragment extends BaseFragment implements View.OnClickListe
             if (!TextUtils.isEmpty(subTopic)) {
                 SPUtils.setMqttSubscribeTopic(mContext, subTopic);
             }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_load_cache:
+
+                if (isChecked){
+                    final String subTopic = SPUtils.getMqttSubscribeTopic(mContext);
+
+
+                    if (!TextUtils.isEmpty(subTopic)) {
+                        mSubscribeTopicEt.setText(subTopic);
+                    }
+                }else {
+                    mSubscribeTopicEt.getEditableText().clear();
+                }
+
+                break;
         }
     }
 }

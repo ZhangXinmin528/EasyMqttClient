@@ -55,7 +55,7 @@ public final class MqttConfig {
     }
 
     public String getConfigParams() {
-        return builder.P.toString();
+        return builder.outputConfig();
     }
 
     public static class Builder {
@@ -170,7 +170,7 @@ public final class MqttConfig {
          * @return {@link #Builder(Context)}
          * @see MqttConnectOptions#setConnectionTimeout(int)
          */
-        public Builder setTimeout(@IntRange(from = 0) int timeout) {
+        public Builder setConnectionTimeout(@IntRange(from = 0) int timeout) {
             P.mConnectionTimeout = timeout;
             return this;
         }
@@ -261,7 +261,7 @@ public final class MqttConfig {
                         "CleanSession : " + P.mCleanSession,
                         "Keepalive : " + P.mKeepalive,
                         "Reconnect : " + P.mReconnect,
-                        "Timeout : " + P.mConnectionTimeout);
+                        "ConnectionTimeout : " + P.mConnectionTimeout);
             }
 
             if (mMqttAndroidClient != null) {
@@ -269,6 +269,19 @@ public final class MqttConfig {
             }
 
             return new MqttConfig(this);
+        }
+
+
+        public String outputConfig() {
+            return "MQTT connection configure :" + "\n" +
+                    "Uri : " + "tcp://" + P.mHost + ":" + P.mPort + "\n" +
+                    "ClientId : " + P.mClientId + "\n" +
+                    "UserName : " + P.mUserName + "\n" +
+                    "Password : " + P.mPassWord + "\n" +
+                    "CleanSession : " + P.mCleanSession + "\n" +
+                    "Keepalive : " + P.mKeepalive + "\n" +
+                    "Reconnect : " + P.mReconnect + "\n" +
+                    "ConnectionTimeout : " + P.mConnectionTimeout;
         }
     }
 
@@ -303,6 +316,7 @@ public final class MqttConfig {
             mConnectionTimeout = defaultTimeOut;
             mKeepalive = defaultKeepAlive;
         }
+
 
         @Override
         public String toString() {

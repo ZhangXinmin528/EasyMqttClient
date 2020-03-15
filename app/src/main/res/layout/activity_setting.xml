@@ -140,10 +140,9 @@
             style="@style/textPaddingStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MQTT信息配置"
+            android:text="@string/all_title_mqtt_info"
             android:textColor="@color/colorBlack"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText" />
+            android:textSize="18sp"/>
 
         <include layout="@layout/layout_horizonal_gray_divider" />
 

@@ -47,6 +47,7 @@
     <string name="rationale_storage">Disable storage space permissions, you will not be able to use the file read and write or delete function ~</string>
 
     <!--Setting-->
+    <string name="all_setting">Setting</string>
     <string name="all_app_version">v%1$s</string>
     <string name="all_blog_url">Blog：</string>
     <string name="all_personal_email">Email：</string>
@@ -72,5 +73,6 @@
     <string name="all_tips_topic">Note:The topic that you subscribe or publish to the server.</string>
     <string name="all_publish_topic">Publish Topic</string>
     <string name="all_tips_cache_configure">Note:If set to true, all configurations listed in the page will be cached after the connection is established, after the topic is subscribed, or after the message is published.</string>
-    <string name="all_load_cache">加载缓存</string>
+    <string name="all_load_cache">Load cache</string>
+    <string name="all_title_mqtt_info">MQTT Information Configuration</string>
 </resources>

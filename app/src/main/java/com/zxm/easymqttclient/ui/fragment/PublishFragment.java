@@ -52,10 +52,7 @@ public class PublishFragment extends BaseFragment implements
     protected void initViews(View rootView) {
         //2.发布
         mPublishTopicEt = rootView.findViewById(R.id.et_publish_topic);
-        final String publishTopic = SPUtils.getMqttPublishTopic(mContext);
-        if (!TextUtils.isEmpty(publishTopic) && mIsAutoloadingCache) {
-            mPublishTopicEt.setText(publishTopic);
-        }
+
 
         mMessageEt = rootView.findViewById(R.id.et_publish_message);
         RadioGroup rg_publish = rootView.findViewById(R.id.rg_publish);
@@ -69,6 +66,10 @@ public class PublishFragment extends BaseFragment implements
 
         remainCb.setOnCheckedChangeListener(this);
         rootView.findViewById(R.id.tv_publish).setOnClickListener(this);
+
+        //是否加载缓存
+        final CheckBox loadCacheCb = rootView.findViewById(R.id.cb_load_cache);
+        loadCacheCb.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -126,6 +127,17 @@ public class PublishFragment extends BaseFragment implements
         switch (buttonView.getId()) {
             case R.id.cb_retained:
                 mIsRetained = isChecked;
+                break;
+            case R.id.cb_load_cache:
+
+                if (isChecked) {
+                    final String publishTopic = SPUtils.getMqttPublishTopic(mContext);
+                    if (!TextUtils.isEmpty(publishTopic)) {
+                        mPublishTopicEt.setText(publishTopic);
+                    }
+                } else {
+                    mPublishTopicEt.getEditableText().clear();
+                }
                 break;
         }
     }

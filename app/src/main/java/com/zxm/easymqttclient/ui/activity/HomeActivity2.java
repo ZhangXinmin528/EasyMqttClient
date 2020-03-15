@@ -125,22 +125,6 @@ public class HomeActivity2 extends BaseActivity implements
         mTabLayout = findViewById(R.id.tablayout_home);
         mTabLayout.setupWithViewPager(viewPager);
 
-        mTabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mSelectedIndex = tab.getPosition();
-                Toast.makeText(mContext, "选择了： " + mSelectedIndex, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {

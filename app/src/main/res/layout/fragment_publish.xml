@@ -140,4 +140,25 @@
 
     </LinearLayout>
 
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <CheckBox
+            android:id="@+id/cb_load_cache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="@string/all_load_cache"
+            android:textColor="@android:color/black" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
 </android.support.v7.widget.LinearLayoutCompat>
