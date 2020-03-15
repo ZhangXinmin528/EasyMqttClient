@@ -26,6 +26,6 @@ public class MqttApplication extends Application {
     }
 
     private void initBugly(){
-        Bugly.init(this,"60b2e0b6ed",false);
+        Bugly.init(this,"60b2e0b6ed",BuildConfig.DEBUG);
     }
 }
