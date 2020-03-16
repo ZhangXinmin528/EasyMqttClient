@@ -1,6 +1,12 @@
 # Release History
 
-#### v1.0.5(未发布)
+#### v1.0.5.2
+
+1.Viewpager+fragment使用bug修复；
+
+2.用户体验优化；
+
+#### v1.0.5.1
 
 1.继承腾讯Bugly和应用升级功能；
 

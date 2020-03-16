@@ -7,7 +7,7 @@ android {
         applicationId "com.zxm.easymqttclient"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
+        versionCode 2
         versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -70,7 +70,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "EasyMqttClient_${variant.versionName}_${variant.buildType.name}.apk"
+            outputFileName = "EasyMqttClient_${variant.versionName}.${variant.versionCode}_${variant.buildType.name}.apk"
         }
     }
 }

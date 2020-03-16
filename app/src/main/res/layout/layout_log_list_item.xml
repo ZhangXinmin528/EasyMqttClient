@@ -4,8 +4,6 @@
     android:id="@+id/tv_log_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:ellipsize="middle"
-    android:maxLines="3"
     android:paddingStart="12dp"
     android:paddingTop="6dp"
     android:paddingEnd="12dp"

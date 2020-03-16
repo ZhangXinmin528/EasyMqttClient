@@ -126,7 +126,7 @@ public final class SPUtils {
      * @return
      */
     public static int getConnectionTimeout(@NonNull Context context) {
-        return (int) SharedPreferencesUtil.get(context, SP_CONNECTION_TIMEOUT, 30);
+        return (int) SharedPreferencesUtil.get(context, SP_CONNECTION_TIMEOUT, 1000);
     }
 
     /**

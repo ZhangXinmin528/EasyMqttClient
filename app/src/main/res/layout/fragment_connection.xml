@@ -211,7 +211,7 @@
     <ScrollView
         android:id="@+id/layout_configure"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@drawable/shape_loading_bg"
         android:visibility="gone">
 

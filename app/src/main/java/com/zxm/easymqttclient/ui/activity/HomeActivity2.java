@@ -50,7 +50,6 @@ public class HomeActivity2 extends BaseActivity implements
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private TabLayout mTabLayout;
-    private int mSelectedIndex;
     private HomeTabAdapter mAdapter;
 
     private LogSheetDialog mLogDialog;
@@ -80,7 +79,6 @@ public class HomeActivity2 extends BaseActivity implements
 
     @Override
     protected void initParamsAndViews() {
-        mSelectedIndex = 0;
         mAdapter = new HomeTabAdapter(getSupportFragmentManager());
 
         mAdapter.addItem("Connect", ConnectionFragment.newInstance());
@@ -121,7 +119,8 @@ public class HomeActivity2 extends BaseActivity implements
 
         final ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(mAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        //TODO:参数为1,页面会重新创建，分析&解决方案？？
+        viewPager.setOffscreenPageLimit(2);
         mTabLayout = findViewById(R.id.tablayout_home);
         mTabLayout.setupWithViewPager(viewPager);
 
