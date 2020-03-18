@@ -32,6 +32,7 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
+            android:id="@+id/tv_app_name"
             style="@style/textPaddingStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -142,7 +143,7 @@
             android:layout_height="wrap_content"
             android:text="@string/all_title_mqtt_info"
             android:textColor="@color/colorBlack"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <include layout="@layout/layout_horizonal_gray_divider" />
 

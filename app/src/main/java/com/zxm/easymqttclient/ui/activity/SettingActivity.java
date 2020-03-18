@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zxm.easymqttclient.BuildConfig;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.util.DisplayUtil;
@@ -45,6 +46,13 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (actionBar != null) {
             actionBar.setTitle(R.string.all_setting);
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        final TextView appName = findViewById(R.id.tv_app_name);
+        if ("dev".equals(BuildConfig.FLAVOR)) {
+            appName.setText(R.string.app_name_dev);
+        } else {
+            appName.setText(R.string.app_name);
         }
 
         final TextView version = findViewById(R.id.tv_app_version);

@@ -57,6 +57,21 @@ android {
         }
     }
 
+    flavorDimensions "mqtt"
+    productFlavors {
+        //开发
+        dev {
+            applicationIdSuffix = '.dev'
+            manifestPlaceholders = [APP_NAME: "@string/app_name_dev"]
+            dimension "mqtt"
+        }
+        //发布
+        publish {
+            manifestPlaceholders = [APP_NAME: "@string/app_name"]
+            dimension "mqtt"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -81,8 +96,12 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
 
-    //引用module
+    //引用Mqtt框架
     implementation project(':mqtt_master')
+
+    //使用AAR
+//    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
+//    implementation(name: 'mqtt_service_1.0.3_release', ext: 'aar')
 
     //noinspection GradleDependency
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.ext.recyclerAdapterVersion"
@@ -97,7 +116,4 @@ dependencies {
     api "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
-    //使用AAR
-//    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.mqttClientVersion"
-//    implementation(name: 'mqtt_service_1.0.2_release', ext: 'aar')
 }
