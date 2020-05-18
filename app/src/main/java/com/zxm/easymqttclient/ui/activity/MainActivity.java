@@ -21,9 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.zxm.easymqttclient.BuildConfig;
 import com.zxm.easymqttclient.R;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.ui.adapter.HomeTabAdapter;
@@ -39,7 +39,7 @@ import com.zxm.utils.core.permission.PermissionChecker;
  * Created by ZhangXinmin on 2020/3/11.
  * Copyright (c) 2020 . All rights reserved.
  */
-public class HomeActivity2 extends BaseActivity implements
+public class MainActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_PERMISSIONS = 1001;
@@ -53,7 +53,6 @@ public class HomeActivity2 extends BaseActivity implements
     private HomeTabAdapter mAdapter;
 
     private LogSheetDialog mLogDialog;
-
     //Receive log information.
     private BroadcastReceiver mLogReceiver = new BroadcastReceiver() {
         @Override
@@ -74,7 +73,7 @@ public class HomeActivity2 extends BaseActivity implements
 
     @Override
     protected Object setLayout() {
-        return R.layout.activity_home2;
+        return R.layout.activity_main;
     }
 
     @Override

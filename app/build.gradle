@@ -35,7 +35,7 @@ android {
 
     buildTypes {
         release {
-            //混淆
+            //缩减代码
             minifyEnabled true
             //压缩优化
             zipAlignEnabled true

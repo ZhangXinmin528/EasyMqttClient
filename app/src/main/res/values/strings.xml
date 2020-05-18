@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">EasyMqttClient</string>
-    <string name="app_name_dev">EasyMqttClientDev</string>
+    <string name="app_name">MqttClient</string>
+    <string name="app_name_dev">MqttClientDev</string>
 
     <string name="all_input_client_id">Client Id</string>
     <string name="all_input_server">Mqtt Host</string>

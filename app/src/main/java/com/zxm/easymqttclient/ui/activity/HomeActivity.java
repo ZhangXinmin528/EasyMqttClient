@@ -28,9 +28,9 @@ import com.coding.zxm.mqtt_master.client.listener.MqttActionListener;
 import com.coding.zxm.mqtt_master.client.listener.SimpleConnectionMqttCallback;
 import com.coding.zxm.mqtt_master.util.MqttDebuger;
 import com.zxm.easymqttclient.R;
-import com.zxm.easymqttclient.ui.adapter.MqttLogAdapter;
 import com.zxm.easymqttclient.base.BaseActivity;
 import com.zxm.easymqttclient.model.LogEntity;
+import com.zxm.easymqttclient.ui.adapter.MqttLogAdapter;
 import com.zxm.easymqttclient.util.Constant;
 import com.zxm.easymqttclient.util.DialogUtil;
 import com.zxm.easymqttclient.util.PermissionChecker;
@@ -43,6 +43,7 @@ import java.util.List;
  * Copyright (c) 2018 . All rights reserved.
  * 建立连接
  */
+@Deprecated
 public class HomeActivity extends BaseActivity implements
         View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 

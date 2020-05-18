@@ -24,7 +24,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--建立连接-->
-        <activity android:name=".ui.activity.HomeActivity2">
+        <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +40,9 @@
 
         <!--Setting-->
         <activity android:name=".ui.activity.SettingActivity" />
+        <!--配置默认参数-->
         <activity android:name=".ui.activity.MqttDefaultActivity" />
+        <!--配置用户参数-->
         <activity android:name=".ui.activity.MqttUserActivity" />
 
         <!--订阅&发布-->
